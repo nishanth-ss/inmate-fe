@@ -63,14 +63,14 @@ function TuckShopPos() {
     );
 
     // ---------------- debug logs ----------------
-    useEffect(() => {
-        console.log("tuckShopItems:", tuckShopItems);
-        console.log("tuckShopError:", tuckShopError);
-        console.log("inmateList:", inmateList);
-        console.log("inmateError:", inmateError);
-        console.log("purchases:", purchases);
-        console.log("purchasesError:", purchasesError);
-    }, [tuckShopItems, tuckShopError, inmateList, inmateError, purchases, purchasesError]);
+    // useEffect(() => {
+    //     console.log("tuckShopItems:", tuckShopItems);
+    //     console.log("tuckShopError:", tuckShopError);
+    //     console.log("inmateList:", inmateList);
+    //     console.log("inmateError:", inmateError);
+    //     console.log("purchases:", purchases);
+    //     console.log("purchasesError:", purchasesError);
+    // }, [tuckShopItems, tuckShopError, inmateList, inmateError, purchases, purchasesError]);
 
     // ---------------- available items filter ----------------
     useEffect(() => {
@@ -116,8 +116,8 @@ function TuckShopPos() {
             setRefectch(refetch + 1);
             enqueueSnackbar(data?.data?.message || "Success", { variant: 'success' });
             setIsFormOpen(false);
+            setSelectedInventory(null);
         }
-        setSelectedInventory(null);
     }
 
     // ---------------- validation schema ----------------
@@ -205,10 +205,10 @@ function TuckShopPos() {
     // ---------------- purchase search effect ----------------
     useEffect(() => {
         // If user cleared search box, clear filtered purchases
-        if (!purchaseSearch || purchaseSearch.trim() === "") {
-            setFilteredPurchases([]);
-            return;
-        }
+        // if (!purchaseSearch || purchaseSearch.trim() === "") {
+        //     setFilteredPurchases([]);
+        //     return;
+        // }
         // If purchases already loaded, filter client-side
         if (purchases && Array.isArray(purchases)) {
             setFilteredPurchases(
@@ -229,6 +229,7 @@ function TuckShopPos() {
             const res = await axios.post(url, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
+            if (selectedInmateItem?._id) handleInmateBalance(selectedInmateItem?._id)
             enqueueSnackbar(res?.data?.message || "Transaction reversed", { variant: "success" });
             setRefectch(prev => prev + 1);
         } catch (err) {
@@ -268,7 +269,7 @@ function TuckShopPos() {
                 </div>
 
                 {/* Recent Purchases */}
-                <Card className="border border-[#3498db]">
+                <Card className="border border-[#3498db] max-h-[300px] overflow-y-scroll">
                     <CardHeader className="flex justify-between items-center">
                         <CardTitle>Recent Purchases</CardTitle>
                         <div className="flex gap-2">
@@ -308,7 +309,7 @@ function TuckShopPos() {
                                         variant="destructive"
                                         size="sm"
                                         onClick={() => handleReverse(p._id)}
-                                        disabled={p.status === "reversed"}
+                                        disabled={p.is_reversed || userRole !== "ADMIN" }
                                     >
                                         Reverse
                                     </Button>
@@ -337,7 +338,9 @@ function TuckShopPos() {
                                 options={inmateList || []}
                                 value={selectedInmateItem || null}
                                 getOptionLabel={(option) =>
-                                    option ? `${option.firstName} ${option.lastName} - ${option.inmateId}` : ""
+                                    option
+                                        ? `${option.firstName} ${option.lastName} - ${option.inmateId}${option.is_blocked === "true" ? " (Blocked)" : ""}`
+                                        : ""
                                 }
                                 onChange={(event, newValue) => {
                                     setSelectedInmateItem(newValue);
@@ -412,7 +415,7 @@ function TuckShopPos() {
                                     <span className="text-xl font-bold text-green-600">₹{total.toFixed(2)}</span>
                                 </div>
 
-                                {selectedInmateItem?.balance >= total && (
+                                {selectedInmateItem?.balance >= total && total > 0 && (
                                     <Button
                                         className="w-full bg-green-500 hover:bg-green-600 text-white py-3"
                                         onClick={() => {
@@ -451,12 +454,12 @@ function TuckShopPos() {
                                 </div>
 
                                 <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
-                                    <DialogTrigger asChild>
+                                    {/* <DialogTrigger asChild>
                                         <Button className="bg-blue-500 hover:bg-blue-600" disabled={userRole !== "ADMIN"}>
                                             <Plus className="w-4 h-4 mr-2" />
                                             Add Item
                                         </Button>
-                                    </DialogTrigger>
+                                    </DialogTrigger> */}
                                     <DialogContent>
                                         <DialogHeader>
                                             <DialogTitle>{selectediInventory ? "Update Item" : "Add New Item"}</DialogTitle>
@@ -632,7 +635,7 @@ function TuckShopPos() {
                                                 <div className="text-sm text-gray-600 mb-1">Stock: {item.stockQuantity}</div>
                                                 <div className="text-sm text-gray-600 mb-1">Item No: {item.itemNo}</div>
                                             </div>
-                                            <div className="flex items-center justify-between">
+                                            {/* <div className="flex items-center justify-between">
                                                 {item.description && (
                                                     <div className="text-sm text-gray-500">{item.description}</div>
                                                 )}
@@ -643,7 +646,7 @@ function TuckShopPos() {
                                                         setSelectedInventory(item);
                                                     }}
                                                 />
-                                            </div>
+                                            </div> */}
                                         </div>
                                     ))
                                 ) : (

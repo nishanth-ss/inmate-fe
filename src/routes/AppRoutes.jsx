@@ -16,6 +16,7 @@ import BulkOperations from '../pages/BulkOperations/BulkOperations';
 import Department from '../pages/Department/Department';
 import InmateProfile from '../pages/InMateManageMent/InmateProfile';
 import InmateTransaction from '../pages/InMateManageMent/InmateTransaction';
+import Inventory from '../pages/Inventory/inventory';
 
 export default function AppRoutes() {
 
@@ -37,6 +38,7 @@ export default function AppRoutes() {
                     <Route path="/user-management" element={<UserManagement />} />
                     <Route path="/bulk-operations" element={<BulkOperations />} />
                     <Route path="/department" element={<Department />} />
+                    <Route path="/inventory" element={<Inventory />} />
                 </Route>
             </Route>
 

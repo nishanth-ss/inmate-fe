@@ -26,7 +26,6 @@ export default function Header() {
         }
     }, [locations]);
 
-
     async function handleLogout() {
         const url = `user/logout`;
         const method = "post";
@@ -75,8 +74,8 @@ export default function Header() {
                             <div className="grid grid-cols-3 gap-2 pl-10 text-center pr-5">
                                 {
                                     selectedLocation?.custodyLimits?.map((val, index) => {
-                                        return <div className="border-r border-gray-400 pr-2">
-                                            <p>{val.custodyType === "remand_prisoner" ? "Remand Prison" : val.custodyType === "under_trial" ? "Under Trail" : "Contempt of Court" }</p>
+                                        return <div className="border-r border-gray-400 pr-2" key={index}>
+                                            <p>{val.custodyType === "remand_prisoner" ? "Remand Prison" : val.custodyType === "under_trail" ? "Under Trail" : "Contempt of Court" }</p>
                                             <div className="flex gap-3">
                                                 <span>Deposit : <span className="text-green-500">{val.depositLimit}</span></span>
                                                 <span>Spend : <span className="text-green-500">{val.spendLimit}</span></span>
@@ -87,7 +86,7 @@ export default function Header() {
                             </div>
                         {/* </div> */}
                         <div className="flex flex-col justify-center border-r border-gray-400 pr-2">
-                            <Button variant="ghost" className="cursor-pointer" size="icon" onClick={() => setLocationModal(true)}>
+                            <Button variant="ghost" className="cursor-pointer w-full" size="icon" onClick={() => setLocationModal(true)}>
                                 <MapPin className={`w-full ${!selectedLocation?.locationName ? 'text-red-500' : 'text-green-500'}`} />
                             </Button>
                             <p>{selectedLocation?.locationName ? `${selectedLocation?.locationName}` : "No location added"}</p>
@@ -114,7 +113,7 @@ export default function Header() {
             <LocationDialogBox
                 open={LocationModal}
                 setOpen={setLocationModal}
-                selectedLocation={selectedLocation}
+                selectedLocation={locations?.[0]}
                 setSelectedLocation={setSelectedLocation}
                 setRefetch={setRefetch}
             />

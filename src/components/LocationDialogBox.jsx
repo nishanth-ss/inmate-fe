@@ -17,7 +17,6 @@ export default function LocationDialogBox({
   open,
   setOpen,
   selectedLocation,
-  setSelectedLocation,
   setRefetch,
 }) {
   const { enqueueSnackbar } = useSnackbar();
@@ -30,13 +29,13 @@ export default function LocationDialogBox({
       purchaseStatus: "approved",
     },
     {
-      custodyType: "under_trial",
+      custodyType: "under_trail",
       spendLimit: "",
       depositLimit: "",
       purchaseStatus: "approved",
     },
     {
-      custodyType: "remand_of_court",
+      custodyType: "contempt_of_court",
       spendLimit: "",
       depositLimit: "",
       purchaseStatus: "approved",
@@ -82,25 +81,24 @@ export default function LocationDialogBox({
           { variant: "success" }
         );
         setOpen(false);
-        setSelectedLocation(null);
         setRefetch((prev) => prev + 1);
         formik.resetForm();
         localStorage.setItem("location", JSON.stringify(data?.data));
       }
     },
-  });
+  });  
 
   // ✅ Update form values safely when editing
-  useEffect(() => {
-    if (selectedLocation) {
-      formik.setValues({
-        locationName: selectedLocation?.locationName || "",
-        custodyLimits: selectedLocation?.custodyLimits?.length
-          ? selectedLocation.custodyLimits
-          : defaultCustodyLimits,
-      });
-    }
-  }, [selectedLocation]);
+useEffect(() => {
+  if (open && selectedLocation) {
+    formik.setValues({
+      locationName: selectedLocation?.locationName || "",
+      custodyLimits: selectedLocation?.custodyLimits?.length
+        ? selectedLocation.custodyLimits
+        : defaultCustodyLimits,
+    });
+  }
+}, [open, selectedLocation]);
 
   const selectedLocationHaveValue =
     Object.keys(selectedLocation ?? {}).length > 0;
@@ -258,7 +256,6 @@ export default function LocationDialogBox({
               variant="outline"
               onClick={() => {
                 setOpen(false);
-                setSelectedLocation(null);
                 formik.resetForm();
               }}
             >
