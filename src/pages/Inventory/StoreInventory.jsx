@@ -149,7 +149,7 @@ function StoreInventory() {
 
             <TablePagination
                 component="div"
-                count={data?.length}
+                count={data?.length || 0}
                 page={page}
                 onPageChange={handleChangePage}
                 rowsPerPage={rowsPerPage}

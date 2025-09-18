@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Dialog,
     DialogTitle,
@@ -21,7 +21,8 @@ import useFetchData from "@/hooks/useFetchData";
 function StoreInventoryDialog({ open, setOpen, selectedData, setSelectedData, setRefetch, refetch }) {
 
     const { enqueueSnackbar } = useSnackbar();
-    const { data } = useFetchData('inventory/canteen-item-options');
+    
+    const { data } = useFetchData('inventory/canteen-item-options',refetch);
 
     const initialValues = {
         date: selectedData?.vendorPurchase?.date
@@ -176,217 +177,217 @@ function StoreInventoryDialog({ open, setOpen, selectedData, setSelectedData, se
                                 />
 
                                 {/* Store Items Section */}
-                               <FieldArray name="storeItems">
-  {({ push, remove }) => (
-    <div className="flex flex-col gap-4">
-      <h3 className="font-semibold">Store Items</h3>
+                                <FieldArray name="storeItems">
+                                    {({ push, remove }) => (
+                                        <div className="flex flex-col gap-4">
+                                            <h3 className="font-semibold">Store Items</h3>
 
-      {values.storeItems.map((item, index) => (
-        <div
-          key={index}
-          className="flex flex-col gap-4 border p-4 rounded-lg"
-        >
-          {/* First row: 3 columns */}
-          <div className="grid grid-cols-3 gap-4">
-            {/* Item Name Autocomplete */}
-            <Autocomplete
-              freeSolo
-              options={data.map((opt) => opt.itemName)}
-              value={item.itemName || ""}
-              onChange={(e, newValue) => {
-                const selected = data.find(
-                  (opt) => opt.itemName === newValue
-                );
+                                            {values.storeItems.map((item, index) => (
+                                                <div
+                                                    key={index}
+                                                    className="flex flex-col gap-4 border p-4 rounded-lg"
+                                                >
+                                                    {/* First row: 3 columns */}
+                                                    <div className="grid grid-cols-3 gap-4">
+                                                        {/* Item Name Autocomplete */}
+                                                        <Autocomplete
+                                                            freeSolo
+                                                            options={data.map((opt) => opt.itemName)}
+                                                            value={item.itemName || ""}
+                                                            onChange={(e, newValue) => {
+                                                                const selected = data.find(
+                                                                    (opt) => opt.itemName === newValue
+                                                                );
 
-                if (selected) {
-                  // Existing item selected
-                  setFieldValue(
-                    `storeItems[${index}].itemName`,
-                    selected.itemName || ""
-                  );
-                  setFieldValue(
-                    `storeItems[${index}].itemNo`,
-                    selected.itemNo || ""
-                  );
-                  setFieldValue(
-                    `storeItems[${index}].stock`,
-                    selected.stockQuantity || 1
-                  );
-                  setFieldValue(
-                    `storeItems[${index}].sellingPrice`,
-                    selected.price || 0
-                  );
-                  setFieldValue(
-                    `storeItems[${index}].category`,
-                    selected.category || ""
-                  );
-                  setFieldValue(
-                    `storeItems[${index}].status`,
-                    selected.status || "Active"
-                  );
-                } else {
-                  // New item typed
-                  setFieldValue(
-                    `storeItems[${index}].itemName`,
-                    newValue || ""
-                  );
-                }
-              }}
-              onInputChange={(e, newInputValue) => {
-                setFieldValue(
-                  `storeItems[${index}].itemName`,
-                  newInputValue || ""
-                );
-              }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Pick or Type Item Name"
-                  size="small"
-                  error={
-                    touched.storeItems?.[index]?.itemName &&
-                    Boolean(errors.storeItems?.[index]?.itemName)
-                  }
-                  helperText={
-                    touched.storeItems?.[index]?.itemName &&
-                    errors.storeItems?.[index]?.itemName
-                  }
-                />
-              )}
-            />
+                                                                if (selected) {
+                                                                    // Existing item selected
+                                                                    setFieldValue(
+                                                                        `storeItems[${index}].itemName`,
+                                                                        selected.itemName || ""
+                                                                    );
+                                                                    setFieldValue(
+                                                                        `storeItems[${index}].itemNo`,
+                                                                        selected.itemNo || ""
+                                                                    );
+                                                                    setFieldValue(
+                                                                        `storeItems[${index}].stock`,
+                                                                        selected.stockQuantity || 1
+                                                                    );
+                                                                    setFieldValue(
+                                                                        `storeItems[${index}].sellingPrice`,
+                                                                        selected.price || 0
+                                                                    );
+                                                                    setFieldValue(
+                                                                        `storeItems[${index}].category`,
+                                                                        selected.category || ""
+                                                                    );
+                                                                    setFieldValue(
+                                                                        `storeItems[${index}].status`,
+                                                                        selected.status || "Active"
+                                                                    );
+                                                                } else {
+                                                                    // New item typed
+                                                                    setFieldValue(
+                                                                        `storeItems[${index}].itemName`,
+                                                                        newValue || ""
+                                                                    );
+                                                                }
+                                                            }}
+                                                            onInputChange={(e, newInputValue) => {
+                                                                setFieldValue(
+                                                                    `storeItems[${index}].itemName`,
+                                                                    newInputValue || ""
+                                                                );
+                                                            }}
+                                                            renderInput={(params) => (
+                                                                <TextField
+                                                                    {...params}
+                                                                    label="Pick or Type Item Name"
+                                                                    size="small"
+                                                                    error={
+                                                                        touched.storeItems?.[index]?.itemName &&
+                                                                        Boolean(errors.storeItems?.[index]?.itemName)
+                                                                    }
+                                                                    helperText={
+                                                                        touched.storeItems?.[index]?.itemName &&
+                                                                        errors.storeItems?.[index]?.itemName
+                                                                    }
+                                                                />
+                                                            )}
+                                                        />
 
-            <TextField
-              name={`storeItems[${index}].itemNo`}
-              label="Item No"
-              size="small"
-              value={item.itemNo}
-              onChange={handleChange}
-              error={
-                touched.storeItems?.[index]?.itemNo &&
-                Boolean(errors.storeItems?.[index]?.itemNo)
-              }
-              helperText={
-                touched.storeItems?.[index]?.itemNo &&
-                errors.storeItems?.[index]?.itemNo
-              }
-            />
+                                                        <TextField
+                                                            name={`storeItems[${index}].itemNo`}
+                                                            label="Item No"
+                                                            size="small"
+                                                            value={item.itemNo}
+                                                            onChange={handleChange}
+                                                            error={
+                                                                touched.storeItems?.[index]?.itemNo &&
+                                                                Boolean(errors.storeItems?.[index]?.itemNo)
+                                                            }
+                                                            helperText={
+                                                                touched.storeItems?.[index]?.itemNo &&
+                                                                errors.storeItems?.[index]?.itemNo
+                                                            }
+                                                        />
 
-            <TextField
-              name={`storeItems[${index}].amount`}
-              label="Amount"
-              type="number"
-              size="small"
-              value={item.amount}
-              onChange={handleChange}
-              error={
-                touched.storeItems?.[index]?.amount &&
-                Boolean(errors.storeItems?.[index]?.amount)
-              }
-              helperText={
-                touched.storeItems?.[index]?.amount &&
-                errors.storeItems?.[index]?.amount
-              }
-              onWheel={(e) => e.target.blur()}
-            />
-          </div>
+                                                        <TextField
+                                                            name={`storeItems[${index}].amount`}
+                                                            label="Amount"
+                                                            type="number"
+                                                            size="small"
+                                                            value={item.amount}
+                                                            onChange={handleChange}
+                                                            error={
+                                                                touched.storeItems?.[index]?.amount &&
+                                                                Boolean(errors.storeItems?.[index]?.amount)
+                                                            }
+                                                            helperText={
+                                                                touched.storeItems?.[index]?.amount &&
+                                                                errors.storeItems?.[index]?.amount
+                                                            }
+                                                            onWheel={(e) => e.target.blur()}
+                                                        />
+                                                    </div>
 
-          {/* Second row: 4 columns */}
-          <div className="grid grid-cols-4 gap-4 items-center">
-            <TextField
-              name={`storeItems[${index}].stock`}
-              label="Stock"
-              type="number"
-              size="small"
-              value={item.stock}
-              onChange={handleChange}
-              error={
-                touched.storeItems?.[index]?.stock &&
-                Boolean(errors.storeItems?.[index]?.stock)
-              }
-              helperText={
-                touched.storeItems?.[index]?.stock &&
-                errors.storeItems?.[index]?.stock
-              }
-              onWheel={(e) => e.target.blur()}
-            />
+                                                    {/* Second row: 4 columns */}
+                                                    <div className="grid grid-cols-4 gap-4 items-center">
+                                                        <TextField
+                                                            name={`storeItems[${index}].stock`}
+                                                            label="Stock"
+                                                            type="number"
+                                                            size="small"
+                                                            value={item.stock}
+                                                            onChange={handleChange}
+                                                            error={
+                                                                touched.storeItems?.[index]?.stock &&
+                                                                Boolean(errors.storeItems?.[index]?.stock)
+                                                            }
+                                                            helperText={
+                                                                touched.storeItems?.[index]?.stock &&
+                                                                errors.storeItems?.[index]?.stock
+                                                            }
+                                                            onWheel={(e) => e.target.blur()}
+                                                        />
 
-            <TextField
-              name={`storeItems[${index}].sellingPrice`}
-              label="Selling Price"
-              type="number"
-              size="small"
-              value={item.sellingPrice}
-              onChange={handleChange}
-              error={
-                touched.storeItems?.[index]?.sellingPrice &&
-                Boolean(errors.storeItems?.[index]?.sellingPrice)
-              }
-              helperText={
-                touched.storeItems?.[index]?.sellingPrice &&
-                errors.storeItems?.[index]?.sellingPrice
-              }
-              onWheel={(e) => e.target.blur()}
-            />
+                                                        <TextField
+                                                            name={`storeItems[${index}].sellingPrice`}
+                                                            label="Selling Price"
+                                                            type="number"
+                                                            size="small"
+                                                            value={item.sellingPrice}
+                                                            onChange={handleChange}
+                                                            error={
+                                                                touched.storeItems?.[index]?.sellingPrice &&
+                                                                Boolean(errors.storeItems?.[index]?.sellingPrice)
+                                                            }
+                                                            helperText={
+                                                                touched.storeItems?.[index]?.sellingPrice &&
+                                                                errors.storeItems?.[index]?.sellingPrice
+                                                            }
+                                                            onWheel={(e) => e.target.blur()}
+                                                        />
 
-            <TextField
-              name={`storeItems[${index}].category`}
-              label="Category"
-              size="small"
-              value={item.category}
-              onChange={handleChange}
-              error={
-                touched.storeItems?.[index]?.category &&
-                Boolean(errors.storeItems?.[index]?.category)
-              }
-              helperText={
-                touched.storeItems?.[index]?.category &&
-                errors.storeItems?.[index]?.category
-              }
-            />
+                                                        <TextField
+                                                            name={`storeItems[${index}].category`}
+                                                            label="Category"
+                                                            size="small"
+                                                            value={item.category}
+                                                            onChange={handleChange}
+                                                            error={
+                                                                touched.storeItems?.[index]?.category &&
+                                                                Boolean(errors.storeItems?.[index]?.category)
+                                                            }
+                                                            helperText={
+                                                                touched.storeItems?.[index]?.category &&
+                                                                errors.storeItems?.[index]?.category
+                                                            }
+                                                        />
 
-            <div className="flex justify-end">
-              <IconButton
-                size="small"
-                sx={{ width: 50, height: 32 }} // fixed width = 50px
-                onClick={() =>
-                  !selectedData?.items
-                    ? remove(index)
-                    : handleItemDelete(
-                        values?.storeItems?.[index]?.itemID,
-                        index,
-                        remove(index)
-                      )
-                }
-                disabled={values.storeItems.length === 1}
-              >
-                <Delete fontSize="small" color="error" />
-              </IconButton>
-            </div>
-          </div>
-        </div>
-      ))}
+                                                        <div className="flex justify-end">
+                                                            <IconButton
+                                                                size="small"
+                                                                sx={{ width: 50, height: 32 }} // fixed width = 50px
+                                                                onClick={() =>
+                                                                    !selectedData?.items
+                                                                        ? remove(index)
+                                                                        : handleItemDelete(
+                                                                            values?.storeItems?.[index]?.itemID,
+                                                                            index,
+                                                                            remove(index)
+                                                                        )
+                                                                }
+                                                                disabled={values.storeItems.length === 1}
+                                                            >
+                                                                <Delete fontSize="small" color="error" />
+                                                            </IconButton>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
 
-      <Button
-        variant="outlined"
-        size="small"
-        startIcon={<Add fontSize="small" />}
-        onClick={() =>
-          push({
-            itemName: "",
-            itemNo: "",
-            amount: "",
-            stock: "",
-            sellingPrice: "",
-            category: "",
-            status: "Active",
-          })
-        }
-      >
-        Add Item
-      </Button>
-    </div>
-  )}
-</FieldArray>
+                                            <Button
+                                                variant="outlined"
+                                                size="small"
+                                                startIcon={<Add fontSize="small" />}
+                                                onClick={() =>
+                                                    push({
+                                                        itemName: "",
+                                                        itemNo: "",
+                                                        amount: "",
+                                                        stock: "",
+                                                        sellingPrice: "",
+                                                        category: "",
+                                                        status: "Active",
+                                                    })
+                                                }
+                                            >
+                                                Add Item
+                                            </Button>
+                                        </div>
+                                    )}
+                                </FieldArray>
 
                             </div>
                         </DialogContent>

@@ -121,7 +121,7 @@ function CanteenInventory() {
 
       <TablePagination
         component="div"
-        count={inventory.length}
+        count={data?.length || 0}
         page={page}
         onPageChange={handleChangePage}
         rowsPerPage={rowsPerPage}
