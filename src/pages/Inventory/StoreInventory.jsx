@@ -74,7 +74,7 @@ function StoreInventory() {
                         <TableBody>
                             {data?.length > 0 ? (
                                 data.map((record, recordIndex) => (
-                                    <TableRow key={record._id} className="hover:bg-gray-50">
+                                    <TableRow key={recordIndex} className="hover:bg-gray-50">
                                         <TableCell className="text-center">{recordIndex + 1}</TableCell>
                                         <TableCell className="text-center">
                                             {new Date(record.vendorPurchase.date).toLocaleDateString()}
