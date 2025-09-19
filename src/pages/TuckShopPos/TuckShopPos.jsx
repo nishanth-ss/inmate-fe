@@ -624,7 +624,7 @@ function TuckShopPos() {
                                                 <div className="flex items-center gap-4">
                                                     <h4 className="font-semibold text-lg">{item.itemName}</h4>
                                                     <span
-                                                        className={`${item?.status === "active" ? "bg-green-500" : "bg-red-500"} text-[12px] py-1 text-white px-2 rounded`}
+                                                        className={`${item?.status === "Active" ? "bg-green-500" : "bg-red-500"} text-[12px] py-1 text-white px-2 rounded`}
                                                     >
                                                         {item?.status.toUpperCase()}
                                                     </span>

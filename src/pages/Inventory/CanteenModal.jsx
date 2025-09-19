@@ -27,7 +27,7 @@ function CanteenModal({ open, setOpen, selectedItem, setSelectedItem, refetch, s
 
     const validationSchema = Yup.object({
         itemName: Yup.string().required("Item name is required"),
-        price: Yup.number().required("Price is required").positive(),
+        price: Yup.number().required("MRP is required").positive(),
         stockQuantity: Yup.number().required("Total stock is required").min(0),
         category: Yup.string().required("Category is required"),
         itemNo: Yup.string().required("Item No is required"),
@@ -42,9 +42,9 @@ function CanteenModal({ open, setOpen, selectedItem, setSelectedItem, refetch, s
 
     async function postData(payLoad) {
         const isEdit = !!selectedItem;
-        const url = isEdit ? `inventory/transfer` : `inventory`;
+        const url = isEdit ? `inventory/transfer` : `inventory/create-canteen-stock`;
         const method = "post";
-        const customPayload = isEdit ? {...payLoad,transferQty: payLoad.stockQuantity} : payLoad
+        const customPayload = isEdit ? {...payLoad,transferQty: payLoad.stockQuantity} : {...payLoad,sellingPrice:payLoad.price}
 
         const { data, error } = await usePostData(url, customPayload, method);
 
@@ -94,7 +94,7 @@ function CanteenModal({ open, setOpen, selectedItem, setSelectedItem, refetch, s
 
                             <TextField
                                 name="price"
-                                label="Price"
+                                label="MRP"
                                 type="number"
                                 size="small"
                                 value={values.price}

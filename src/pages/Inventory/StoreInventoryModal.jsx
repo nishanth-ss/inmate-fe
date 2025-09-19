@@ -21,8 +21,8 @@ import useFetchData from "@/hooks/useFetchData";
 function StoreInventoryDialog({ open, setOpen, selectedData, setSelectedData, setRefetch, refetch }) {
 
     const { enqueueSnackbar } = useSnackbar();
-    
-    const { data } = useFetchData('inventory/canteen-item-options',refetch);
+
+    const { data } = useFetchData('inventory/canteen-item-options', refetch);
 
     const initialValues = {
         date: selectedData?.vendorPurchase?.date
@@ -30,11 +30,11 @@ function StoreInventoryDialog({ open, setOpen, selectedData, setSelectedData, se
             : "",
         invoiceNo: selectedData?.vendorPurchase?.invoiceNo || "",
         vendorName: selectedData?.vendorPurchase?.vendorName || "",
+        vendorValue: selectedData?.vendorPurchase?.vendorValue || "",
         status: selectedData?.vendorPurchase?.status || "Active",
         storeItems: selectedData?.items?.map((item) => ({
             itemName: item.itemName || "",
             itemNo: item.itemNo || "",
-            amount: item.amount || "",
             stock: item.stock || "",
             sellingPrice: item.sellingPrice || "",
             category: item.category || "",
@@ -44,7 +44,6 @@ function StoreInventoryDialog({ open, setOpen, selectedData, setSelectedData, se
                 {
                     itemName: "",
                     itemNo: "",
-                    amount: "",
                     stock: "",
                     sellingPrice: "",
                     category: "",
@@ -58,6 +57,7 @@ function StoreInventoryDialog({ open, setOpen, selectedData, setSelectedData, se
         date: Yup.string().required("Date is required"),
         invoiceNo: Yup.string().required("Invoice No is required"),
         vendorName: Yup.string().required("Vendor Name is required"),
+        vendorValue: Yup.number().required("Vendor value is required").positive(),
         storeItems: Yup.array().of(
             Yup.object().shape({
                 itemName: Yup.string().required("Item name is required"),
@@ -71,7 +71,6 @@ function StoreInventoryDialog({ open, setOpen, selectedData, setSelectedData, se
                     then: (schema) => schema.required("Category is required"),
                     otherwise: (schema) => schema.optional(),
                 }),
-                amount: Yup.number().required("Amount is required").positive(),
                 stock: Yup.number().required("Stock required").positive(),
                 sellingPrice: Yup.number().required("Selling Price required").positive(),
             })
@@ -176,6 +175,16 @@ function StoreInventoryDialog({ open, setOpen, selectedData, setSelectedData, se
                                     fullWidth
                                 />
 
+                                <TextField
+                                    name="vendorValue"
+                                    label="Vendor Value"
+                                    value={values.vendorValue}
+                                    onChange={handleChange}
+                                    error={touched.vendorValue && Boolean(errors.vendorValue)}
+                                    helperText={touched.vendorValue && errors.vendorValue}
+                                    fullWidth
+                                />
+
                                 {/* Store Items Section */}
                                 <FieldArray name="storeItems">
                                     {({ push, remove }) => (
@@ -209,10 +218,10 @@ function StoreInventoryDialog({ open, setOpen, selectedData, setSelectedData, se
                                                                         `storeItems[${index}].itemNo`,
                                                                         selected.itemNo || ""
                                                                     );
-                                                                    setFieldValue(
-                                                                        `storeItems[${index}].stock`,
-                                                                        selected.stockQuantity || 1
-                                                                    );
+                                                                    // setFieldValue(
+                                                                    //     `storeItems[${index}].stock`,
+                                                                    //     selected.stockQuantity || 1
+                                                                    // );
                                                                     setFieldValue(
                                                                         `storeItems[${index}].sellingPrice`,
                                                                         selected.price || 0
@@ -271,28 +280,6 @@ function StoreInventoryDialog({ open, setOpen, selectedData, setSelectedData, se
                                                                 errors.storeItems?.[index]?.itemNo
                                                             }
                                                         />
-
-                                                        <TextField
-                                                            name={`storeItems[${index}].amount`}
-                                                            label="Amount"
-                                                            type="number"
-                                                            size="small"
-                                                            value={item.amount}
-                                                            onChange={handleChange}
-                                                            error={
-                                                                touched.storeItems?.[index]?.amount &&
-                                                                Boolean(errors.storeItems?.[index]?.amount)
-                                                            }
-                                                            helperText={
-                                                                touched.storeItems?.[index]?.amount &&
-                                                                errors.storeItems?.[index]?.amount
-                                                            }
-                                                            onWheel={(e) => e.target.blur()}
-                                                        />
-                                                    </div>
-
-                                                    {/* Second row: 4 columns */}
-                                                    <div className="grid grid-cols-4 gap-4 items-center">
                                                         <TextField
                                                             name={`storeItems[${index}].stock`}
                                                             label="Stock"
@@ -310,7 +297,10 @@ function StoreInventoryDialog({ open, setOpen, selectedData, setSelectedData, se
                                                             }
                                                             onWheel={(e) => e.target.blur()}
                                                         />
+                                                    </div>
 
+                                                    {/* Second row: 4 columns */}
+                                                    <div className="grid grid-cols-[40%_40%_20%] gap-4 items-center">
                                                         <TextField
                                                             name={`storeItems[${index}].sellingPrice`}
                                                             label="Selling Price"
@@ -345,7 +335,7 @@ function StoreInventoryDialog({ open, setOpen, selectedData, setSelectedData, se
                                                             }
                                                         />
 
-                                                        <div className="flex justify-end">
+                                                        <div className="flex justify-end pr-4">
                                                             <IconButton
                                                                 size="small"
                                                                 sx={{ width: 50, height: 32 }} // fixed width = 50px
@@ -375,7 +365,6 @@ function StoreInventoryDialog({ open, setOpen, selectedData, setSelectedData, se
                                                     push({
                                                         itemName: "",
                                                         itemNo: "",
-                                                        amount: "",
                                                         stock: "",
                                                         sellingPrice: "",
                                                         category: "",

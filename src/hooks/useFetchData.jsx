@@ -27,10 +27,9 @@ function useFetchData(url, refetch, type, totalRecords = false) {
                     }
                 });
                 setData(type == "true" ? response.data : type == "logs" ? response?.data : response.data?.data);
-
             } catch (err) {
                 setError(err);
-                if(err.status === 401 || err.status === 403){
+                if (err.status === 401 || err.status === 403) {
                     enqueueSnackbar("Token expired", {
                         variant: 'error',
                     });
@@ -38,7 +37,7 @@ function useFetchData(url, refetch, type, totalRecords = false) {
             }
         };
 
-        fetchData(); 
+        fetchData();
     }, [url, refetch]);
 
     return { data, error, one };
