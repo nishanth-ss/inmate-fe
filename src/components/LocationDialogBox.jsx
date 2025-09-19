@@ -134,7 +134,7 @@ useEffect(() => {
 
           {/* Remand Prisoner */}
           <div>
-            <Label className="mb-2">Remand Prisoner</Label>
+            <Label className="mb-2">Remand Prison</Label>
             <div className="grid grid-cols-2 gap-3 items-center">
               <div>
                 <Input
@@ -212,7 +212,7 @@ useEffect(() => {
 
           {/* Remand of Court */}
           <div>
-            <Label className="mb-2">Remand of Court</Label>
+            <Label className="mb-2">Contempt of Court</Label>
             <div className="grid grid-cols-2 gap-3 items-center">
               <div>
                 <Input

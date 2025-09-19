@@ -22,7 +22,7 @@ function SideBar() {
         { title: "Inmate Management", icon: Users, path: '/inmate-management', roles: ["ADMIN"] },
         { title: "Financial Management", icon: ReceiptIndianRupee, path: '/financial-management', roles: ["ADMIN"] },
         { title: "Transaction History", icon: ArrowLeftRight, path: '/transaction-history', roles: ["ADMIN"] },
-        { title: "Tuck Shop POS", icon: Store, path: '/tuck-shop-pos', roles: ["ADMIN", "POS"] },
+        { title: "Canteen POS", icon: Store, path: '/tuck-shop-pos', roles: ["ADMIN", "POS"] },
         { title: "Reports", icon: FileText, path: '/reports', roles: ["ADMIN"] },
         { title: "Bulk Operations", icon: Upload, path: '/bulk-operations', roles: ["ADMIN"] },
         { title: "Department", icon: BellElectric, path: '/department', roles: ["ADMIN"] },

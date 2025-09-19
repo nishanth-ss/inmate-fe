@@ -14,31 +14,9 @@ import CanteenModal from "./CanteenModal";
 import useFetchData from "@/hooks/useFetchData";
 import { useHandleDelete } from "@/hooks/useHandleDelete";
 import { useSnackbar } from "notistack";
+import TransferModal from "./TransferModal";
 
 function CanteenInventory() {
-  // 🔹 Dummy data for now
-  const [inventory, setInventory] = useState([
-    {
-      _id: "1",
-      itemName: "Chips",
-      price: 20,
-      stock_quantity: 50,
-      category: "Snacks",
-      item_no: "ITM-001",
-      total_stock: 100,
-      status: "Active",
-    },
-    {
-      _id: "2",
-      itemName: "Coke",
-      price: 40,
-      stock_quantity: 100,
-      category: "Beverages",
-      item_no: "ITM-002",
-      total_stock: 100,
-      status: "Inactive",
-    },
-  ]);
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -47,6 +25,7 @@ function CanteenInventory() {
   const [refetch, setRefetch] = useState(0);
   const { data, error } = useFetchData(`inventory/canteen`, refetch);
   const { enqueueSnackbar } = useSnackbar();
+  const [transferModalOpen,setTransferModalOpen] = useState(false);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -105,6 +84,11 @@ function CanteenInventory() {
                         </Button>
                       </div>
                     </TableCell>
+                      <TableCell>
+                        <Button variant="outlined" size="sm" className="bg-red-500 text-white" onClick={()=>{setTransferModalOpen(true),setSelectedData(item)}}>
+                          Transfer
+                        </Button>
+                    </TableCell>
                   </TableRow>
                 ))
               ) : (
@@ -129,6 +113,7 @@ function CanteenInventory() {
       />
 
       <CanteenModal open={open} setOpen={setOpen} selectedItem={selectedData} setSelectedItem={setSelectedData} setRefetch={setRefetch} refetch={refetch} />
+      <TransferModal open={transferModalOpen} setOpen={setTransferModalOpen} selectedItem={selectedData} setSelectedItem={setSelectedData} setRefetch={setRefetch} refetch={refetch} />
     </div>
   );
 }

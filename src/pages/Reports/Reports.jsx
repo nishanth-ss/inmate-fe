@@ -24,7 +24,7 @@ const reportTypes = [
     },
     {
         id: 3,
-        title: "Tuck Shop Sales",
+        title: "Canteen Sales",
         description: "Revenue and item sales data",
         apiUrl: 'reports/tuckshop-sales-report'
     },
