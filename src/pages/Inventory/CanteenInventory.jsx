@@ -53,6 +53,21 @@ function CanteenInventory() {
     setPage(0);
   };
 
+   async function deleteItem(id) {
+          const { data, error } = await useHandleDelete(`inventory/canteen-item/${id}`);
+  
+          if (error) {
+              enqueueSnackbar(data?.data?.message, {
+                  variant: 'error',
+              });
+          } else {
+              enqueueSnackbar(data?.data?.message, {
+                  variant: 'success',
+              });
+              setTimeout(() => setRefetch((prev) => prev + 1), 200);
+          }
+      }
+
   return (
     <div className="w-full bg-gray-50 p-4 md:p-6 lg:p-8">
       <div className="max-w-8xl mx-auto space-y-6">
@@ -105,7 +120,7 @@ function CanteenInventory() {
                         <Button variant="ghost" size="sm" className="h-8 w-8 p-0 !cursor-pointer" onClick={() => { setOpen(true), setSelectedData(item) }}>
                           <Edit className="w-4 h-4 text-gray-600" />
                         </Button>
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={()=>deleteItem(item.itemNo)}>
                           <Trash2 className="w-4 h-4 text-gray-600" />
                         </Button>
                       </div>

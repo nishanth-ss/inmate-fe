@@ -1,4 +1,4 @@
-import { Shield, User, MapPin } from "lucide-react";
+import { Shield, User, MapPin, DatabaseZap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
@@ -6,6 +6,7 @@ import { usePostData } from "../../hooks/usePostData";
 import LocationDialogBox from "../LocationDialogBox.jsx";
 import { useEffect, useState } from "react";
 import useFetchData from "@/hooks/useFetchData";
+import DBLocationModal from "../DBLocationModal";
 
 export default function Header() {
 
@@ -18,6 +19,8 @@ export default function Header() {
     const [refetch, setRefetch] = useState(0);
     const { data: locations, error } = useFetchData(`location`, refetch);
     const [selectedLocation, setSelectedLocation] = useState({});
+    const [dbPath, setDbPath] = useState(null);
+    const [dbModal,setDbModal] = useState(false);
 
     useEffect(() => {
         if (locations?.[0]) {
@@ -56,6 +59,18 @@ export default function Header() {
         }
     }
 
+    async function DBLocation() {
+        const url = `backup`;
+        const { data, error } = await usePostData(url);
+
+        if (!error && data?.path) {
+            setDbPath(data.path);
+            enqueueSnackbar("Backup location fetched successfully", { variant: "success" });
+        } else {
+            enqueueSnackbar("Failed to fetch backup location", { variant: "error" });
+        }
+    }
+
     return (
         <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
             <div className="flex items-center justify-between px-6 py-4">
@@ -71,19 +86,19 @@ export default function Header() {
                 <div className="flex items-center space-x-4">
                     {(userRole === "ADMIN") && <div className="flex items-center">
                         {/* <div className="flex flex-col justify-center items-center"> */}
-                            <div className="grid grid-cols-3 gap-2 pl-10 text-center pr-5">
-                                {
-                                    selectedLocation?.custodyLimits?.map((val, index) => {
-                                        return <div className="border-r border-gray-400 pr-2" key={index}>
-                                            <p>{val.custodyType === "remand_prisoner" ? "Remand Prison" : val.custodyType === "under_trail" ? "Under Trail" : "Contempt of Court" }</p>
-                                            <div className="flex gap-3">
-                                                <span>Deposit : <span className="text-green-500">{val.depositLimit}</span></span>
-                                                <span>Spend : <span className="text-green-500">{val.spendLimit}</span></span>
-                                            </div>
+                        <div className="grid grid-cols-3 gap-2 pl-10 text-center pr-5">
+                            {
+                                selectedLocation?.custodyLimits?.map((val, index) => {
+                                    return <div className="border-r border-gray-400 pr-2" key={index}>
+                                        <p>{val.custodyType === "remand_prisoner" ? "Remand Prison" : val.custodyType === "under_trail" ? "Under Trail" : "Contempt of Court"}</p>
+                                        <div className="flex gap-3">
+                                            <span>Deposit : <span className="text-green-500">{val.depositLimit}</span></span>
+                                            <span>Spend : <span className="text-green-500">{val.spendLimit}</span></span>
                                         </div>
-                                    })
-                                }
-                            </div>
+                                    </div>
+                                })
+                            }
+                        </div>
                         {/* </div> */}
                         <div className="flex flex-col justify-center border-r border-gray-400 pr-2">
                             <Button variant="ghost" className="cursor-pointer w-full" size="icon" onClick={() => setLocationModal(true)}>
@@ -91,7 +106,29 @@ export default function Header() {
                             </Button>
                             <p>{selectedLocation?.locationName ? `${selectedLocation?.locationName}` : "No location added"}</p>
                         </div>
-                    </div>}
+                    </div>
+                    }
+
+                    {
+                        (userRole === "ADMIN") && (
+                            <div className="flex flex-col items-center justify-center border-r border-gray-400 pr-2">
+                                <Button
+                                    variant="ghost"
+                                    className="cursor-pointer w-full"
+                                    size="icon"
+                                    onClick={()=>setDbModal(true)}
+                                >
+                                    <DatabaseZap
+                                        className={`w-full ${!dbPath ? 'text-red-500' : 'text-green-500'}`}
+                                    />
+                                </Button>
+                                <p>DB Location</p>
+                                {dbPath && (
+                                    <p className="text-xs text-gray-600 mt-1 break-all">{dbPath}</p>
+                                )}
+                            </div>
+                        )
+                    }
                     <div className="flex items-center space-x-3">
                         <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
                             <User className="text-white text-sm" />
@@ -116,6 +153,11 @@ export default function Header() {
                 selectedLocation={locations?.[0]}
                 setSelectedLocation={setSelectedLocation}
                 setRefetch={setRefetch}
+            />
+
+            <DBLocationModal
+                open={dbModal}
+                onClose={() => setDbModal(false)}
             />
         </header>
     );
