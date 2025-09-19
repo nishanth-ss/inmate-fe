@@ -122,7 +122,7 @@ function StoreInventory() {
                                 <TableHead className="text-center font-semibold">Amount</TableHead>
                                 <TableHead className="text-center font-semibold">Stocks</TableHead>
                                 <TableHead className="text-center font-semibold">Items</TableHead>
-                                <TableHead className="text-center font-semibold">Selling Price</TableHead>
+                                <TableHead className="text-center font-semibold">MRP</TableHead>
                                 <TableHead className="text-center font-semibold">Actions</TableHead>
                             </TableRow>
                         </TableHeader>

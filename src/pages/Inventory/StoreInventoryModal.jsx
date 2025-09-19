@@ -303,7 +303,7 @@ function StoreInventoryDialog({ open, setOpen, selectedData, setSelectedData, se
                                                     <div className="grid grid-cols-[40%_40%_20%] gap-4 items-center">
                                                         <TextField
                                                             name={`storeItems[${index}].sellingPrice`}
-                                                            label="Selling Price"
+                                                            label="MRP"
                                                             type="number"
                                                             size="small"
                                                             value={item.sellingPrice}
