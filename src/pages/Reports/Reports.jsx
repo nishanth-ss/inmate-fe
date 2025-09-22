@@ -9,6 +9,7 @@ import { useSnackbar } from "notistack"
 import { usePostData } from "../../hooks/usePostData";
 import { Autocomplete, TextField } from "@mui/material";
 import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 const reportTypes = [
     {
@@ -157,25 +158,58 @@ function Reports() {
                 document.body.removeChild(link);
                 URL.revokeObjectURL(url);
             } else if (selectedFormat === "pdf") {
-                const doc = new jsPDF();
+                if (apiUrl.id === 2 ? responseData.transactions && responseData.transactions.length > 0 : responseData.data && responseData.data.length > 0) {
+                    // Flatten data
+                    const flattenedData = apiUrl.id === 2 ? responseData.transactions.map(item => flattenObject(item)) : responseData.data.map(item => flattenObject(item));
 
-                doc.text("Inventory Report", 10, 10);
+                    // Get all unique columns
+                    const columnsSet = new Set();
+                    flattenedData.forEach(item => Object.keys(item).forEach(k => columnsSet.add(k)));
+                    const columns = Array.from(columnsSet);
 
-                responseData.data.forEach((item, index) => {
-                    doc.text(
-                        `${index + 1}. ${item.itemName} | Price: ${item.price} | Qty: ${item.totalQty}`,
-                        10,
-                        20 + index * 10
-                    );
-                });
+                    // Generate rows
+                    const rows = flattenedData.map(item => columns.map(col => item[col] ?? ""));
 
-                doc.save(`${reportsName}.pdf`);
+                    const doc = new jsPDF('l', 'pt', 'a4'); // landscape orientation may help wide tables
+                    doc.setFontSize(14);
+                    doc.text(`${reportsName}`, 40, 40);
+
+                    autoTable(doc, {
+                        head: [columns],
+                        body: rows,
+                        startY: 60,
+                        styles: { fontSize: 7 },
+                        headStyles: { fillColor: [41, 128, 185], textColor: 255 },
+                        margin: { left: 20, right: 20 },
+                        tableWidth: 'auto',
+                    });
+
+                    doc.save(`${reportsName}.pdf`);
+                } else {
+                    enqueueSnackbar("No data to generate PDF", { variant: "warning" });
+                }
+
             } else {
                 enqueueSnackbar("Report generated successfully", {
                     variant: "success",
                 });
             }
         }
+    }
+
+    function flattenObject(obj, prefix = "") {
+        const flat = {};
+        for (let key in obj) {
+            if (!obj.hasOwnProperty(key)) continue;
+            const value = obj[key];
+            const newKey = prefix ? `${prefix}.${key}` : key;
+            if (value && typeof value === "object" && !Array.isArray(value)) {
+                Object.assign(flat, flattenObject(value, newKey));
+            } else {
+                flat[newKey] = Array.isArray(value) ? value.join(", ") : value ?? "";
+            }
+        }
+        return flat;
     }
 
     return (
