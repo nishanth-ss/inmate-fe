@@ -198,7 +198,7 @@ function InMateManageMent() {
                                         direction={orderBy === "custodyType" ? order : "dsc"}
                                         onClick={() => handleRequestSort("custodyType")}
                                     >
-                                        UC/TC/RP
+                                        UT/CT/RP
                                     </TableSortLabel>
                                 </TableCell>
 

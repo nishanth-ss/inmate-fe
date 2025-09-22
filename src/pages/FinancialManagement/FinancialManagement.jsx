@@ -54,11 +54,11 @@ function FinancialManagement() {
         const { data, error } = await usePostData(url, updatedData, method);
 
         if (error) {
-            enqueueSnackbar(error.response?.data.message, {
+            enqueueSnackbar(error?.message, {
                 variant: 'error',
             });
         } else {
-            enqueueSnackbar(data?.data?.message, {
+            enqueueSnackbar(data?.message, {
                 variant: 'success',
             });
         }

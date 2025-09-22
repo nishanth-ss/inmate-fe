@@ -23,7 +23,7 @@ export default function LocationDialogBox({
 
   const defaultCustodyLimits = [
     {
-      custodyType: "remand_prisoner",
+      custodyType: "remand_prison",
       spendLimit: "",
       depositLimit: "",
       purchaseStatus: "approved",
@@ -72,7 +72,7 @@ export default function LocationDialogBox({
       const { data, error } = await usePostData(url, values, method);
 
       if (error) {
-        enqueueSnackbar(error?.response?.data?.message, { variant: "error" });
+        enqueueSnackbar(error?.message, { variant: "error" });
       } else {
         enqueueSnackbar(
           isEdit

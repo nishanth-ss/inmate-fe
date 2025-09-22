@@ -90,7 +90,7 @@ export default function Header() {
                             {
                                 selectedLocation?.custodyLimits?.map((val, index) => {
                                     return <div className="border-r border-gray-400 pr-2" key={index}>
-                                        <p>{val.custodyType === "remand_prisoner" ? "Remand Prison" : val.custodyType === "under_trail" ? "Under Trail" : "Contempt of Court"}</p>
+                                        <p>{val.custodyType === "remand_prison" ? "Remand Prison" : val.custodyType === "under_trail" ? "Under Trail" : "Contempt of Court"}</p>
                                         <div className="flex gap-3">
                                             <span>Deposit : <span className="text-green-500">{val.depositLimit}</span></span>
                                             <span>Spend : <span className="text-green-500">{val.spendLimit}</span></span>
