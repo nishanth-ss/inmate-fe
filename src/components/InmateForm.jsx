@@ -37,21 +37,21 @@ function InmateForm({ setRefetch, refetch, setIsFormOpen, selectedInmate, setOpe
         const { data, error } = await usePostData(url, customPayload, method);
 
         if (error) {
-            if (error.response.status === 401 || error.response.status === 403) {
-                enqueueSnackbar(error.response.data.message, {
+            if (error.status === 401 || error.status === 403) {
+                enqueueSnackbar(error.message, {
                     variant: 'error',
                 });
                 localStorage.clear();
                 navigate("/login");
             } else {
-                enqueueSnackbar(error?.response?.data?.message, {
+                enqueueSnackbar(error?.message, {
                     variant: 'error',
                 });
             }
         } else {
             setRefetch(refetch + 1);
             setIsFormOpen(false);
-            enqueueSnackbar(data?.data?.message, {
+            enqueueSnackbar(data?.message, {
                 variant: 'success',
             });
         }

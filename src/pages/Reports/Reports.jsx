@@ -34,6 +34,12 @@ const reportTypes = [
         description: "Total wages paid by department",
         apiUrl: 'reports/wage-distribution-report'
     },
+    {
+        id: 5,
+        title: "Inventory",
+        description: "Total wages paid by department",
+        apiUrl: 'reports/inventory-report'
+    },
 ]
 
 function Reports() {
@@ -91,25 +97,43 @@ function Reports() {
         const url = apiUrl?.apiUrl;
         const method = "post";
 
-        const { data, error } = await usePostData(url, apiUrl.id === 1 ? inmatePayload : apiUrl.id === 2 ? transactionPayload : payLoad, method);
+        const { data, error } = await usePostData(
+            url,
+            apiUrl.id === 1
+                ? inmatePayload
+                : apiUrl.id === 2
+                    ? transactionPayload
+                    : payLoad,
+            method
+        );
 
         let reportsName =
-        apiUrl.id === 1 && selectedInmateItem?.inmateId ? `Inmate_${selectedInmateItem?.inmateId}_report` :
-        apiUrl.id === 1 && !selectedInmateItem?.inmateId ? "Inmate_Report" :
-        apiUrl.id === 2 ? "Transaction_Report" :
-        apiUrl.id === 3 ? "Tuck_Shop_Sales_Report" :
-        apiUrl.id === 4 ? "Wage_Distribution_Report" :
-        "Report";
+            apiUrl.id === 1 && selectedInmateItem?.inmateId
+                ? `Inmate_${selectedInmateItem?.inmateId}_report`
+                : apiUrl.id === 1 && !selectedInmateItem?.inmateId
+                    ? "Inmate_Report"
+                    : apiUrl.id === 2
+                        ? "Transaction_Report"
+                        : apiUrl.id === 3
+                            ? "Tuck_Shop_Sales_Report"
+                            : apiUrl.id === 4
+                                ? "Wage_Distribution_Report"
+                                : apiUrl.id === 5
+                                    ? "Inventory_Report"
+                                    : "Report";
 
         if (error) {
-            enqueueSnackbar(error?.response?.data?.message || "Error generating report", {
+            enqueueSnackbar(error?.message || "Error generating report", {
                 variant: "error",
             });
         } else {
-            const responseData = data?.data;
+            const responseData = data;
 
             if (selectedFormat === "csv" && typeof responseData === "string") {
-                const blob = new Blob([responseData], { type: "text/csv;charset=utf-8;" });
+                // CSV download
+                const blob = new Blob([responseData], {
+                    type: "text/csv;charset=utf-8;",
+                });
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement("a");
                 link.href = url;
@@ -117,6 +141,20 @@ function Reports() {
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            } else if (selectedFormat === "excel") {
+                // Excel download
+                const blob = new Blob([responseData], {
+                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", `${reportsName}.xlsx`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
             } else {
                 enqueueSnackbar("Report generated successfully", {
                     variant: "success",
