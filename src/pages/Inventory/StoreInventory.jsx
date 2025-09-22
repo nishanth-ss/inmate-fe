@@ -119,6 +119,7 @@ function StoreInventory() {
                                 <TableHead className="text-center font-semibold">Date</TableHead>
                                 <TableHead className="text-center font-semibold">Invoice</TableHead>
                                 <TableHead className="text-center font-semibold">Vendor</TableHead>
+                                <TableHead className="text-center font-semibold">GP Number</TableHead>
                                 <TableHead className="text-center font-semibold">Amount</TableHead>
                                 <TableHead className="text-center font-semibold">Stocks</TableHead>
                                 <TableHead className="text-center font-semibold">Items</TableHead>
@@ -136,7 +137,8 @@ function StoreInventory() {
                                         </TableCell>
                                         <TableCell className="text-center">{record.vendorPurchase.invoiceNo}</TableCell>
                                         <TableCell className="text-center">{record.vendorPurchase.vendorName}</TableCell>
-                                        <TableCell className="text-center">{record.totalAmount}</TableCell>
+                                        <TableCell className="text-center">{record.vendorPurchase.gatePassNumber}</TableCell>
+                                        <TableCell className="text-center">{record.vendorPurchase.vendorValue}</TableCell>
                                         <TableCell className="text-center">
                                             {record.items.map((item) => (
                                                 <div key={item._id} className="pb-1">{item.stock}</div>

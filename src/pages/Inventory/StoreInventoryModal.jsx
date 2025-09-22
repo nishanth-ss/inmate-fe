@@ -31,6 +31,7 @@ function StoreInventoryDialog({ open, setOpen, selectedData, setSelectedData, se
         invoiceNo: selectedData?.vendorPurchase?.invoiceNo || "",
         vendorName: selectedData?.vendorPurchase?.vendorName || "",
         vendorValue: selectedData?.vendorPurchase?.vendorValue || "",
+        gatePassNumber: selectedData?.vendorPurchase?.gatePassNumber || "",
         status: selectedData?.vendorPurchase?.status || "Active",
         storeItems: selectedData?.items?.map((item) => ({
             itemName: item.itemName || "",
@@ -58,6 +59,7 @@ function StoreInventoryDialog({ open, setOpen, selectedData, setSelectedData, se
         invoiceNo: Yup.string().required("Invoice No is required"),
         vendorName: Yup.string().required("Vendor Name is required"),
         vendorValue: Yup.number().required("Vendor value is required").positive(),
+        gatePassNumber: Yup.string().required("Vendor value is required"),
         storeItems: Yup.array().of(
             Yup.object().shape({
                 itemName: Yup.string().required("Item name is required"),
@@ -84,8 +86,6 @@ function StoreInventoryDialog({ open, setOpen, selectedData, setSelectedData, se
     }, [])
 
     async function postData(payLoad) {
-        console.log(payLoad);
-
         const isEdit = !!selectedData;
         const url = isEdit ? `inventory/${selectedData?.vendorPurchase?._id}` : `inventory`;
         const method = isEdit ? "put" : "post";
@@ -133,7 +133,6 @@ function StoreInventoryDialog({ open, setOpen, selectedData, setSelectedData, se
                 validationSchema={validationSchema}
                 enableReinitialize
                 onSubmit={async (values, { setSubmitting }) => {
-                    console.log("Submitting...", values);
                     await postData(values);
                     setSubmitting(false);
                     setOpen(false);
@@ -182,6 +181,16 @@ function StoreInventoryDialog({ open, setOpen, selectedData, setSelectedData, se
                                     onChange={handleChange}
                                     error={touched.vendorValue && Boolean(errors.vendorValue)}
                                     helperText={touched.vendorValue && errors.vendorValue}
+                                    fullWidth
+                                />
+
+                                <TextField
+                                    name="gatePassNumber"
+                                    label="GP Number"
+                                    value={values.gatePassNumber}
+                                    onChange={handleChange}
+                                    error={touched.gatePassNumber && Boolean(errors.gatePassNumber)}
+                                    helperText={touched.gatePassNumber && errors.gatePassNumber}
                                     fullWidth
                                 />
 

@@ -7,7 +7,8 @@ import useFetchData from "../../hooks/useFetchData";
 import { Input } from "../../components/ui/input";
 import { useSnackbar } from "notistack"
 import { usePostData } from "../../hooks/usePostData";
-import { Autocomplete, TextField } from "@mui/material"
+import { Autocomplete, TextField } from "@mui/material";
+import jsPDF from "jspdf";
 
 const reportTypes = [
     {
@@ -155,6 +156,20 @@ function Reports() {
                 link.click();
                 document.body.removeChild(link);
                 URL.revokeObjectURL(url);
+            } else if (selectedFormat === "pdf") {
+                const doc = new jsPDF();
+
+                doc.text("Inventory Report", 10, 10);
+
+                responseData.data.forEach((item, index) => {
+                    doc.text(
+                        `${index + 1}. ${item.itemName} | Price: ${item.price} | Qty: ${item.totalQty}`,
+                        10,
+                        20 + index * 10
+                    );
+                });
+
+                doc.save(`${reportsName}.pdf`);
             } else {
                 enqueueSnackbar("Report generated successfully", {
                     variant: "success",
