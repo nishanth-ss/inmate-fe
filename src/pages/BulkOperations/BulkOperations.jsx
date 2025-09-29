@@ -95,10 +95,10 @@ export default function BulkOperations() {
 
             const { data: payload, error } = response || {};
 
-            if (error || !payload?.data?.success) {
+            if (error || !payload?.success) {
                 enqueueSnackbar("Upload failed.", { variant: 'error' });
             } else {
-                const { created = [], updated = [], failed = [] } = payload.data.results || {};
+                const { created = [], updated = [], failed = [] } = payload.results || {};
                 enqueueSnackbar(`Upload successful. Created: ${created.length}, Updated: ${updated.length}, Failed: ${failed.length}`, { variant: 'success' });
                 if (failed.length > 0) {
                     console.warn("Failed records:", failed);

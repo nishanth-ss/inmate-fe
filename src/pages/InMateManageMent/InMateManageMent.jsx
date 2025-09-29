@@ -107,9 +107,14 @@ function InMateManageMent() {
             <div className="p-6 max-w-8xl mx-auto min-h-screen bg-gray-50">
                 {/* Header */}
                 <div className="flex justify-between items-start mb-8">
-                    <div>
-                        <h1 className="text-3xl font-bold text-gray-900 mb-2">Inmate Management</h1>
-                        <p className="text-gray-600">Manage inmate profiles and demographics</p>
+                    <div className="flex space-x-4">
+                        <div>
+                            <h1 className="text-3xl font-bold text-gray-900 mb-2">Inmate Management</h1>
+                            <p className="text-gray-600">Manage inmate profiles and demographics</p>
+                        </div>
+                        <h1 className="text-xl flex items-center font-semibold h-[40px] text-blue-600 bg-blue-100 px-3 py-1 rounded-md shadow-sm">
+                            Total Inmates: {data?.totalItems || 0}
+                        </h1>
                     </div>
                     <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
                         <DialogTrigger asChild>
@@ -243,7 +248,7 @@ function InMateManageMent() {
                                     <TableCell className="text-gray-900">{inmate.firstName + " " + inmate.lastName}</TableCell>
                                     <TableCell className="text-gray-600">{inmate.custodyType}</TableCell>
                                     <TableCell className="text-gray-600">{inmate.cellNumber}</TableCell>
-                                    <TableCell sx={{ color: "#4ade80",fontWeight: 600 }}>{inmate.balance}</TableCell>
+                                    <TableCell sx={{ color: "#4ade80", fontWeight: 600 }}>{inmate.balance}</TableCell>
                                     <TableCell>
                                         <Badge variant="secondary" className="bg-blue-100 text-blue-800 hover:bg-blue-100">
                                             {inmate.status}
