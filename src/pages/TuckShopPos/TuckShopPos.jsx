@@ -286,7 +286,7 @@ function TuckShopPos() {
                     </CardHeader>
                     <CardContent>
                         {/* show errors clearly so you can debug */}
-                        {purchasesError ? (
+                        {purchasesError && filteredPurchases?.length === 0  ? (
                             <div className="text-red-500">
                                 Error loading purchases: {purchasesError?.message || (purchasesError?.response?.data?.message)}
                             </div>

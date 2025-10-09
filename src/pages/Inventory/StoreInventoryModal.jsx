@@ -210,10 +210,10 @@ function StoreInventoryDialog({ open, setOpen, selectedData, setSelectedData, se
                                                         {/* Item Name Autocomplete */}
                                                         <Autocomplete
                                                             freeSolo
-                                                            options={data.map((opt) => opt.itemName)}
+                                                            options={data?.map((opt) => opt.itemName)}
                                                             value={item.itemName || ""}
                                                             onChange={(e, newValue) => {
-                                                                const selected = data.find(
+                                                                const selected = data?.find(
                                                                     (opt) => opt.itemName === newValue
                                                                 );
 
