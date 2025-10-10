@@ -173,7 +173,7 @@ function TransactionHistory() {
                                             </TableCell>
                                             {/* 🔹 Status Cell */}
                                             <TableCell className={getStatusColor(transaction.status || "Completed")}>
-                                                {transaction.isReversed || transaction.status === "reversed" ? (
+                                                {transaction.is_reversed || transaction.status === "reversed" ? (
                                                     <Badge variant="destructive" className="text-xs">
                                                         Transaction reversed
                                                     </Badge>
