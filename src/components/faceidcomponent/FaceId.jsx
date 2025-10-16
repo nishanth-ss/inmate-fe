@@ -92,39 +92,142 @@ export default function FaceRecognition({ mode = 'register', open, setOpen, setF
     }, 1000);
   };
 
-  const startAutoDetection = () => {
-    let hasCaptured = false;
-    const detectionInterval = setInterval(async () => {
-      if (hasCaptured || !videoRef.current) return;
+const startAutoDetection = () => {
+  let hasCaptured = false;
+  let consecutiveDetections = 0;
+  const requiredStableDetections = 3;
+  const maxDetectionTime = 15000; // 15s timeout
 
-      if (!(videoRef.current instanceof HTMLVideoElement) || videoRef.current.readyState < 2) {
-        return;
-      }
+  setStatus("Align your face in the center box and look straight at the camera.");
 
-      const detection = await faceapi
-        .detectSingleFace(videoRef.current, detectionOptions)
-        .withFaceLandmarks()
-        .withFaceDescriptor();
+  const detectionInterval = setInterval(async () => {
+    if (hasCaptured || !videoRef.current) return;
 
-      if (detection) {
-        hasCaptured = true;
-        clearInterval(detectionInterval);
-        captureFace(detection.descriptor);
-      }
-    }, 500);
+    if (!(videoRef.current instanceof HTMLVideoElement) || videoRef.current.readyState < 2) {
+      return;
+    }
 
-    const cleanup = () => clearInterval(detectionInterval);
-    window.addEventListener("beforeunload", cleanup);
-    return cleanup;
+    const detection = await faceapi
+      .detectSingleFace(videoRef.current, detectionOptions)
+      .withFaceLandmarks()
+      .withFaceDescriptor();
+
+    if (!detection) {
+      consecutiveDetections = 0;
+      setStatus("No face detected. Please move closer to the camera.");
+      return;
+    }
+
+    // --- Bounding Box & Center ---
+    const box = detection.detection.box;
+    const videoWidth = videoRef.current.videoWidth;
+    const videoHeight = videoRef.current.videoHeight;
+    const faceWidthRatio = box.width / videoWidth;
+
+    const faceCenterX = box.x + box.width / 2;
+    const faceCenterY = box.y + box.height / 2;
+
+    // Center offset (0 = perfect center)
+    const centerOffsetX = Math.abs(faceCenterX - videoWidth / 2) / (videoWidth / 2);
+    const centerOffsetY = Math.abs(faceCenterY - videoHeight / 2) / (videoHeight / 2);
+
+    // ✅ Stricter alignment thresholds
+    const minFaceRatio = 0.3;  // closer required (was 0.25)
+    const maxFaceRatio = 0.55; // less zoomed-in allowed (was 0.6)
+    const maxCenterOffsetX = 0.15; // tighter horizontal centering (was 0.25)
+    const maxCenterOffsetY = 0.20; // moderate vertical centering
+
+    // --- Distance checks ---
+    if (faceWidthRatio < minFaceRatio) {
+      consecutiveDetections = 0;
+      setStatus("Move closer to the camera.");
+      return;
+    }
+
+    if (faceWidthRatio > maxFaceRatio) {
+      consecutiveDetections = 0;
+      setStatus("Move slightly farther from the camera.");
+      return;
+    }
+
+    // --- Center checks ---
+    if (centerOffsetX > maxCenterOffsetX) {
+      consecutiveDetections = 0;
+      setStatus("Move to the center of the frame (left/right).");
+      return;
+    }
+
+    if (centerOffsetY > maxCenterOffsetY) {
+      consecutiveDetections = 0;
+      setStatus("Adjust vertically to center your face.");
+      return;
+    }
+
+    // --- Face Orientation Check ---
+    const landmarks = detection.landmarks;
+    const leftEye = landmarks.getLeftEye();
+    const rightEye = landmarks.getRightEye();
+    const nose = landmarks.getNose();
+
+    const leftEyeX = leftEye.reduce((sum, p) => sum + p.x, 0) / leftEye.length;
+    const rightEyeX = rightEye.reduce((sum, p) => sum + p.x, 0) / rightEye.length;
+    const noseX = nose.reduce((sum, p) => sum + p.x, 0) / nose.length;
+
+    const eyeCenterX = (leftEyeX + rightEyeX) / 2;
+    const noseOffset = Math.abs(noseX - eyeCenterX) / (rightEyeX - leftEyeX);
+    const maxNoseOffset = 0.15; // tighter — requires facing straight
+
+    if (noseOffset > maxNoseOffset) {
+      consecutiveDetections = 0;
+      setStatus("Please face the camera directly (don’t turn sideways).");
+      return;
+    }
+
+    const leftEyeY = leftEye.reduce((sum, p) => sum + p.y, 0) / leftEye.length;
+    const rightEyeY = rightEye.reduce((sum, p) => sum + p.y, 0) / rightEye.length;
+    const eyeTilt = Math.abs(leftEyeY - rightEyeY) / box.height;
+
+    if (eyeTilt > 0.08) {
+      consecutiveDetections = 0;
+      setStatus("Keep your head level (don’t tilt).");
+      return;
+    }
+
+    // --- Stable Detection Check ---
+    consecutiveDetections++;
+    setStatus(`Perfect alignment (${consecutiveDetections}/${requiredStableDetections})...`);
+
+    if (consecutiveDetections >= requiredStableDetections) {
+      hasCaptured = true;
+      clearInterval(detectionInterval);
+      captureFace(detection.descriptor);
+    }
+  }, 500);
+
+  const timeout = setTimeout(() => {
+    if (!hasCaptured) {
+      clearInterval(detectionInterval);
+      setStatus("No valid face detected. Please try again.");
+      enqueueSnackbar("Face not detected. Try again.", { variant: "warning" });
+    }
+  }, maxDetectionTime);
+
+  const cleanup = () => {
+    clearInterval(detectionInterval);
+    clearTimeout(timeout);
   };
+
+  window.addEventListener("beforeunload", cleanup);
+  return cleanup;
+};
 
   const captureFace = async (descriptorFromLoop) => {
     const detections = descriptorFromLoop
       ? { descriptor: descriptorFromLoop }
       : await faceapi
-          .detectSingleFace(videoRef.current, detectionOptions)
-          .withFaceLandmarks()
-          .withFaceDescriptor();
+        .detectSingleFace(videoRef.current, detectionOptions)
+        .withFaceLandmarks()
+        .withFaceDescriptor();
 
     if (!detections) {
       enqueueSnackbar('No face detected. Try again.', { variant: 'warning' });
