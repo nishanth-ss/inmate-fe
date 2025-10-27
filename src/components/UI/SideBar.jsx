@@ -10,7 +10,8 @@ import {
     Upload,
     ReceiptIndianRupee,
     BellElectric,
-    ShoppingBag
+    ShoppingBag,
+    CreditCard
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Logo from "../../assets/logo.png"
@@ -29,6 +30,7 @@ function SideBar() {
         { title: "User Management", icon: UserRoundPen, path: '/user-management', roles: ["ADMIN"] },
         { title: "Inventory", icon: ShoppingBag, path: '/inventory', roles: ["ADMIN"] },
         { title: "Audit Trails", icon: ShieldCheck, path: '/audit-trails', roles: ["ADMIN"] },
+        { title: "Rayzorpay Payment", icon: CreditCard, path: '/rayzorpay-payment', roles: ["ADMIN"] },
         { title: "Inmate Profile", icon: Users, path: '/inmate-profile', roles: ["INMATE"] },
         { title: "Inmate Transaction", icon: ArrowLeftRight, path: '/inmate-transaction', roles: ["INMATE"] },
     ];

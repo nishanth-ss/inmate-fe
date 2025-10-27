@@ -17,6 +17,7 @@ import Department from '../pages/Department/Department';
 import InmateProfile from '../pages/InMateManageMent/InmateProfile';
 import InmateTransaction from '../pages/InMateManageMent/InmateTransaction';
 import Inventory from '../pages/Inventory/inventory';
+import RayzorPayPayment from '../pages/RayzorPayPayment';
 
 export default function AppRoutes() {
 
@@ -39,6 +40,7 @@ export default function AppRoutes() {
                     <Route path="/bulk-operations" element={<BulkOperations />} />
                     <Route path="/department" element={<Department />} />
                     <Route path="/inventory" element={<Inventory />} />
+                    <Route path="/rayzorpay-payment" element={<RayzorPayPayment />} />
                 </Route>
             </Route>
 
