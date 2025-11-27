@@ -10,6 +10,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import FaceRecognition from '@/components/faceidcomponent/FaceId';
+import logo from  "../assets/logo.png"
 
 const LoginSchema = Yup.object().shape({
   username: Yup.string()
@@ -65,11 +66,9 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary to-blue-800 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md pt-0">
         <CardHeader className="text-center">
-          <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Shield className="text-primary text-2xl" />
-          </div>
+          <img src={logo} alt="Ag soft solution" srcset="" />
           <CardTitle className="text-2xl font-bold text-gray-800">
             InMate Financial System
           </CardTitle>
