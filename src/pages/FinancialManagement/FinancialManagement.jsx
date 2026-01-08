@@ -11,6 +11,7 @@ import { useEffect, useState } from "react"
 import { Box, Snackbar } from "@mui/material"
 import { useSnackbar } from "notistack"
 import useFetchData from "../../hooks/useFetchData"
+import { Textarea } from "@/components/UI/textarea"
 
 
 function FinancialManagement() {
@@ -89,8 +90,7 @@ function FinancialManagement() {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {/* Daily Wage Entry */}
-                    <Card className="bg-white shadow-sm">
+                    {/* <Card className="bg-white shadow-sm">
 
                         <CardHeader className="flex items-center justify-between ">
                             <CardTitle className="text-xl font-semibold text-gray-900">
@@ -136,7 +136,6 @@ function FinancialManagement() {
                             {({ values, handleChange, setFieldValue, handleSubmit, errors, touched }) => (
                                 <Form onSubmit={handleSubmit}>
                                     <CardContent className="space-y-5">
-                                        {/* Inmate ID */}
                                         <div>
                                             <Label htmlFor="inmateId" className="text-sm font-medium text-gray-700">
                                                 Inmate ID
@@ -159,7 +158,6 @@ function FinancialManagement() {
                                             )}
                                         </div>
 
-                                        {/* Work Assignment */}
                                         <div>
                                             <Label htmlFor="workAssignId" className="text-sm font-medium text-gray-700">
                                                 Work Assignment
@@ -227,7 +225,6 @@ function FinancialManagement() {
                                             )}
                                         </div>
 
-                                        {/* Wage Amount */}
                                         <div>
                                             <Label htmlFor="wageAmount" className="text-sm font-medium text-gray-700">
                                                 Wage Amount
@@ -256,11 +253,11 @@ function FinancialManagement() {
                                 </Form>
                             )}
                         </Formik>
-                    </Card>
+                    </Card> */}
 
 
                     {/* Family Deposit Processing */}
-                    <Card className="bg-white shadow-sm relative">
+                    <Card className="bg-white shadow-sm relative pb-20">
                         <CardHeader className="flex items-center justify-between w-full">
                             <CardTitle className="text-xl font-semibold text-gray-900">
                                 Deposit Processing
@@ -279,9 +276,10 @@ function FinancialManagement() {
                         <Formik
                             initialValues={{
                                 inmateId: "",
-                                depositType: "",
+                                depositType: "Bank",
                                 relationShipId: "",
                                 depositAmount: "",
+                                remarks: ""
                             }}
                             validationSchema={Yup.object({
                                 inmateId: Yup.string().required("Inmate ID is required"),
@@ -337,11 +335,7 @@ function FinancialManagement() {
                                                     <SelectValue placeholder="Select Type" />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value="Admission">Admission</SelectItem>
-                                                    <SelectItem value="Mulakath">Mulakath</SelectItem>
-                                                    <SelectItem value="Court/Custody">Court/Custody</SelectItem>
-                                                    <SelectItem value="Money Order">Money Order</SelectItem>
-                                                    <SelectItem value="other">Other</SelectItem>
+                                                    <SelectItem value="Bank">Bank</SelectItem>
                                                 </SelectContent>
                                             </Select>
                                             {errors.depositType && touched.depositType && (
@@ -396,6 +390,24 @@ function FinancialManagement() {
                                             )}
                                         </div>
 
+                                        <div>
+                                            <Label htmlFor="remarks" className="text-sm font-medium text-gray-700">
+                                                Remarks
+                                            </Label>
+                                            <Textarea
+                                                id="remarks"
+                                                name="remarks"
+                                                value={values.remarks}
+                                                onChange={handleChange}
+                                                className="mt-1"
+                                                placeholder="Enter your remarks"
+                                                rows={4}
+                                            />
+                                            {errors.remarks && touched.remarks && (
+                                                <p className="text-sm text-red-600 mt-1">{errors.remarks}</p>
+                                            )}
+                                        </div>
+
                                         <Button type="submit" className="w-[93%] bg-green-600 hover:bg-green-700 text-white mt-4 absolute bottom-6">
                                             <CreditCard className="w-4 h-4 mr-2" />
                                             Process Deposit
@@ -406,7 +418,7 @@ function FinancialManagement() {
                         </Formik>
                     </Card>
                     {/* Withdrawal Processing */}
-                    <Card className="bg-white shadow-sm">
+                    {/* <Card className="bg-white shadow-sm">
                         <CardHeader className="flex items-center justify-between w-full">
                             <CardTitle className="text-xl font-semibold text-gray-900">
                                 Withdrawal Entry
@@ -449,7 +461,7 @@ function FinancialManagement() {
                             {({ values, handleChange, handleSubmit, errors, touched, setFieldValue }) => (
                                 <Form onSubmit={handleSubmit}>
                                     <CardContent className="space-y-5">
-                                        {/* Inmate ID */}
+                                        
                                         <div>
                                             <Label htmlFor="inmateId" className="text-sm font-medium text-gray-700">
                                                 Inmate ID
@@ -521,7 +533,7 @@ function FinancialManagement() {
                                             )}
                                         </div>
 
-                                        {/* Deposit Amount */}
+                                        
                                         <div>
                                             <Label htmlFor="depositAmount" className="text-sm font-medium text-gray-700">
                                                 Withdrawal Amount
@@ -551,7 +563,7 @@ function FinancialManagement() {
                                 </Form>
                             )}
                         </Formik>
-                    </Card>
+                    </Card> */}
                 </div>
             </div>
         </div>

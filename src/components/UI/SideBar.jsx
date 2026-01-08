@@ -26,11 +26,11 @@ function SideBar() {
         { title: "Canteen POS", icon: Store, path: '/tuck-shop-pos', roles: ["ADMIN", "POS"] },
         { title: "Reports", icon: FileText, path: '/reports', roles: ["ADMIN"] },
         { title: "Bulk Operations", icon: Upload, path: '/bulk-operations', roles: ["ADMIN"] },
-        { title: "Department", icon: BellElectric, path: '/department', roles: ["ADMIN"] },
+        // { title: "Department", icon: BellElectric, path: '/department', roles: ["ADMIN"] },
         { title: "User Management", icon: UserRoundPen, path: '/user-management', roles: ["ADMIN"] },
         { title: "Inventory", icon: ShoppingBag, path: '/inventory', roles: ["ADMIN"] },
         { title: "Audit Trails", icon: ShieldCheck, path: '/audit-trails', roles: ["ADMIN"] },
-        { title: "Rayzorpay Payment", icon: CreditCard, path: '/rayzorpay-payment', roles: ["ADMIN"] },
+        // { title: "Rayzorpay Payment", icon: CreditCard, path: '/rayzorpay-payment', roles: ["ADMIN"] },
         { title: "Inmate Profile", icon: Users, path: '/inmate-profile', roles: ["INMATE"] },
         { title: "Inmate Transaction", icon: ArrowLeftRight, path: '/inmate-transaction', roles: ["INMATE"] },
     ];

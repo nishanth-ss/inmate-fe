@@ -71,7 +71,7 @@ function InmateForm({ setRefetch, refetch, setIsFormOpen, selectedInmate, setOpe
             admissionDate: selectedInmate?.admissionDate
                 ? new Date(selectedInmate.admissionDate).toISOString().split("T")[0]
                 : "",
-            crimeType: selectedInmate?.crimeType || "",
+            phonenumber: selectedInmate?.phonenumber || "",
             is_blocked: selectedInmate?.is_blocked === "true" ? true : false,
         },
         enableReinitialize: true,
@@ -79,11 +79,10 @@ function InmateForm({ setRefetch, refetch, setIsFormOpen, selectedInmate, setOpe
             inmateId: Yup.string().required("Inmate ID is required"),
             status: Yup.string().required("Status is required"),
             firstName: Yup.string().required("First Name is required"),
-            custodyType: Yup.string().required("Custody Type is required"),
             lastName: Yup.string().required("Last Name is required"),
-            cellNumber: Yup.string().required("Cell Number is required"),
-            dateOfBirth: Yup.date()
-                .required("Date of Birth is required")
+            custodyType: Yup.string().optional(),
+            cellNumber: Yup.string().optional(),
+            dateOfBirth: Yup.date().nullable()
                 .test(
                     "min-age",
                     "Inmate must be at least 19 years old on the admission date",
@@ -100,8 +99,8 @@ function InmateForm({ setRefetch, refetch, setIsFormOpen, selectedInmate, setOpe
                     }
                 )
                 .max(new Date(), "Future dates are not allowed"),
-            admissionDate: Yup.date().required("Admission Date is required"),
-            crimeType: Yup.string().required("Crime Type is required"),
+            admissionDate: Yup.date().nullable(),
+            phonenumber: Yup.string().required("Phone Number is required"),
             is_blocked: Yup.boolean()
         }),
         onSubmit: (values) => {
@@ -131,7 +130,7 @@ function InmateForm({ setRefetch, refetch, setIsFormOpen, selectedInmate, setOpe
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <Label htmlFor="inmateId">Inmate ID</Label>
+                    <Label htmlFor="inmateId">Inmate ID<span className="required">*</span></Label>
                     <Input
                         id="inmateId"
                         name="inmateId"
@@ -146,7 +145,7 @@ function InmateForm({ setRefetch, refetch, setIsFormOpen, selectedInmate, setOpe
                 </div>
 
                 <div>
-                    <Label htmlFor="status">Status</Label>
+                    <Label htmlFor="status">Status<span className="required">*</span></Label>
                     <Select
                         value={formik.values.status}
                         onValueChange={(value) => formik.setFieldValue("status", value)}
@@ -170,7 +169,7 @@ function InmateForm({ setRefetch, refetch, setIsFormOpen, selectedInmate, setOpe
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <Label htmlFor="firstName">First Name</Label>
+                    <Label htmlFor="firstName">First Name<span className="required">*</span></Label>
                     <Input
                         id="firstName"
                         name="firstName"
@@ -185,7 +184,7 @@ function InmateForm({ setRefetch, refetch, setIsFormOpen, selectedInmate, setOpe
                 </div>
 
                 <div>
-                    <Label htmlFor="lastName">Last Name</Label>
+                    <Label htmlFor="lastName">Last Name<span className="required">*</span></Label>
                     <Input
                         id="lastName"
                         name="lastName"
@@ -196,6 +195,21 @@ function InmateForm({ setRefetch, refetch, setIsFormOpen, selectedInmate, setOpe
                     />
                     {formik.touched.lastName && formik.errors.lastName && (
                         <p className="text-sm text-red-600">{formik.errors.lastName}</p>
+                    )}
+                </div>
+
+                <div>
+                    <Label htmlFor="phonenumber">Mobile No<span className="required">*</span></Label>
+                    <Input
+                        id="phonenumber"
+                        name="phonenumber"
+                        placeholder="Enter Mobile no"
+                        onChange={formik.handleChange}
+                        value={formik.values.phonenumber}
+                        className="mt-1 border border-blue-500"
+                    />
+                    {formik.touched.phonenumber && formik.errors.phonenumber && (
+                        <p className="text-sm text-red-600">{formik.errors.phonenumber}</p>
                     )}
                 </div>
 
@@ -216,21 +230,6 @@ function InmateForm({ setRefetch, refetch, setIsFormOpen, selectedInmate, setOpe
                     </Select>
                     {formik.touched.custodyType && formik.errors.custodyType && (
                         <p className="text-sm text-red-600">{formik.errors.custodyType}</p>
-                    )}
-                </div>
-
-                <div>
-                    <Label htmlFor="cellNumber">Cell Number</Label>
-                    <Input
-                        id="cellNumber"
-                        name="cellNumber"
-                        placeholder="Enter cell number"
-                        onChange={formik.handleChange}
-                        value={formik.values.cellNumber}
-                        className="mt-1 border border-blue-500"
-                    />
-                    {formik.touched.cellNumber && formik.errors.cellNumber && (
-                        <p className="text-sm text-red-600">{formik.errors.cellNumber}</p>
                     )}
                 </div>
             </div>
@@ -268,18 +267,18 @@ function InmateForm({ setRefetch, refetch, setIsFormOpen, selectedInmate, setOpe
                     )}
                 </div>
 
-                <div>
-                    <Label htmlFor="crimeType">Crime Type</Label>
+                 <div>
+                    <Label htmlFor="cellNumber">Cell Number</Label>
                     <Input
-                        id="crimeType"
-                        name="crimeType"
-                        placeholder="Enter crime type"
+                        id="cellNumber"
+                        name="cellNumber"
+                        placeholder="Enter cell number"
                         onChange={formik.handleChange}
-                        value={formik.values.crimeType}
+                        value={formik.values.cellNumber}
                         className="mt-1 border border-blue-500"
                     />
-                    {formik.touched.crimeType && formik.errors.crimeType && (
-                        <p className="text-sm text-red-600">{formik.errors.crimeType}</p>
+                    {formik.touched.cellNumber && formik.errors.cellNumber && (
+                        <p className="text-sm text-red-600">{formik.errors.cellNumber}</p>
                     )}
                 </div>
 

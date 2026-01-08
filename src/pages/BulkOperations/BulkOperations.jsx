@@ -392,13 +392,13 @@ export default function BulkOperations() {
                             <Users className="w-4 h-4" />
                             Bulk Add Inmates
                         </TabsTrigger>
-                        <TabsTrigger
+                        {/* <TabsTrigger
                             value="bulk-add-wages"
                             className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-b-blue-500 data-[state=active]:text-blue-600 rounded-none cursor-pointer ml-8"
                         >
                             <CreditCard className="w-4 h-4" />
                             Bulk Add Wages
-                        </TabsTrigger>
+                        </TabsTrigger> */}
                     </TabsList>
 
                     <Button variant="outline" onClick={downloadSampleCSV} className="flex items-center gap-2 bg-transparent cursor-pointer mb-1">

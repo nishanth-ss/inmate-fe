@@ -38,9 +38,9 @@ export default function AppRoutes() {
                     <Route path="/audit-trails" element={<AuditTrails />} />
                     <Route path="/user-management" element={<UserManagement />} />
                     <Route path="/bulk-operations" element={<BulkOperations />} />
-                    <Route path="/department" element={<Department />} />
+                    {/* <Route path="/department" element={<Department />} /> */}
                     <Route path="/inventory" element={<Inventory />} />
-                    <Route path="/rayzorpay-payment" element={<RayzorPayPayment />} />
+                    {/* <Route path="/rayzorpay-payment" element={<RayzorPayPayment />} /> */}
                 </Route>
             </Route>
 
