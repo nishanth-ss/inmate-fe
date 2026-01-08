@@ -48,7 +48,9 @@ export default function LocationDialogBox({
       custodyLimits: defaultCustodyLimits,
     },
     validationSchema: Yup.object({
+      name: Yup.string().required("Name is required"),
       locationName: Yup.string().required("Location name is required"),
+      baseUrl: Yup.string().required("Base URL is required"),
       custodyLimits: Yup.array().of(
         Yup.object({
           custodyType: Yup.string().required(),
@@ -92,6 +94,8 @@ export default function LocationDialogBox({
 useEffect(() => {
   if (open && selectedLocation) {
     formik.setValues({
+      name: selectedLocation?.name,
+      baseUrl: selectedLocation?.baseUrl,
       locationName: selectedLocation?.locationName || "",
       custodyLimits: selectedLocation?.custodyLimits?.length
         ? selectedLocation.custodyLimits
@@ -112,6 +116,26 @@ useEffect(() => {
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={formik.handleSubmit} className="space-y-4">
+             {/* Name */}
+          <div>
+            <Label htmlFor="name" className="mb-2">
+              Name
+            </Label>
+            <Input
+              id="name"
+              name="name"
+              value={formik.values.name}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            />
+            {formik.touched.name &&
+              formik.errors.name && (
+                <p className="text-red-500 text-sm">
+                  {formik.errors.name}
+                </p>
+              )}
+          </div>
+
           {/* Location Name */}
           <div>
             <Label htmlFor="locationName" className="mb-2">
@@ -128,6 +152,26 @@ useEffect(() => {
               formik.errors.locationName && (
                 <p className="text-red-500 text-sm">
                   {formik.errors.locationName}
+                </p>
+              )}
+          </div>
+
+            {/* Base URL */}
+          <div>
+            <Label htmlFor="baseUrl" className="mb-2">
+              Base URL
+            </Label>
+            <Input
+              id="baseUrl"
+              name="baseUrl"
+              value={formik.values.baseUrl}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            />
+            {formik.touched.baseUrl &&
+              formik.errors.baseUrl && (
+                <p className="text-red-500 text-sm">
+                  {formik.errors.baseUrl}
                 </p>
               )}
           </div>
