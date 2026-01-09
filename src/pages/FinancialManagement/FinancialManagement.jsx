@@ -72,7 +72,7 @@ function FinancialManagement() {
             formData.append("files", file);
         });
 
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/file`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}file`, {
             method: "POST",
             body: formData
         });
