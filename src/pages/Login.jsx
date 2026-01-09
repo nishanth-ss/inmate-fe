@@ -10,7 +10,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import FaceRecognition from '@/components/faceidcomponent/FaceId';
-import logo from  "../assets/logo.png"
+import logo from "../assets/logo.png"
 
 const LoginSchema = Yup.object().shape({
   username: Yup.string()
@@ -27,31 +27,31 @@ const Login = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   const [openFaceId, setOpenFaceId] = useState(false);
-  const [faceidData,setFaceIdData] = useState(null);
+  const [faceidData, setFaceIdData] = useState(null);
 
   useEffect(() => {
     const loginUser = async () => {
       if (!faceidData) return; // Only run if data exists
-  
+
       try {
         const res = await axios.post(
           `${import.meta.env.VITE_API_URL}user/login`,
-          {descriptor:faceidData}
+          { descriptor: faceidData }
         );
-  
+
         localStorage.setItem("authToken", res.data?.token);
         localStorage.setItem("role", res.data?.user?.role);
         localStorage.setItem("username", res.data?.user?.username);
-  
+
         enqueueSnackbar("User Logged In Successfully", { variant: "success" });
-  
+
         if (res.status === 200) {
           navigate(
             res.data?.user?.role === "POS"
               ? "/tuck-shop-pos"
               : res.data?.user?.role === "INMATE"
-              ? "/inmate-profile"
-              : "/dashboard"
+                ? "/inmate-profile"
+                : "/dashboard"
           );
         }
       } catch (error) {
@@ -60,15 +60,17 @@ const Login = () => {
         });
       }
     };
-  
+
     loginUser();
-  }, [faceidData]);  
+  }, [faceidData]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary to-blue-800 flex items-center justify-center p-4">
       <Card className="w-full max-w-md pt-0">
         <CardHeader className="text-center">
-          <img src={logo} alt="Ag soft solution" srcset="" />
+          <div className='w-[80%] p-5 mx-auto'>
+            <img src={logo} alt="Ag soft solution" srcset="" />
+          </div>
           <CardTitle className="text-2xl font-bold text-gray-800">
             InMate Financial System
           </CardTitle>

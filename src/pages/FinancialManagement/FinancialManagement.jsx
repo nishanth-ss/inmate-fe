@@ -28,7 +28,7 @@ function FinancialManagement() {
     const { data } = useFetchData("department");
     const locationRaw = localStorage.getItem("location");
     const location = locationRaw ? JSON.parse(locationRaw) : null;
-
+    const [uploadedFileIds, setUploadedFileIds] = useState([]);
 
     const { data: inmateData, error: inmateError } = useFetchData(
         inmateIdSearch ? `inmate/search?query=${inmateIdSearch}` : null,
@@ -64,6 +64,33 @@ function FinancialManagement() {
             });
         }
     }
+
+    async function uploadFiles(files) {
+        const formData = new FormData();
+        files.forEach(file => {
+            formData.append("files", file);
+        });
+
+        const response = await fetch("https://nvl2rk2s-5000.inc1.devtunnels.ms/file", {
+            method: "POST",
+            body: formData
+        });
+
+        const result = await response.json();
+
+        if (result?.status) {
+            const ids = result.data.map(f => f._id);
+
+            // append to existing uploaded ids
+            setUploadedFileIds(prev => [...prev, ...ids]);
+
+            return ids;
+        }
+
+        return [];
+    }
+
+
 
     return (
         <div className="w-full bg-gray-50 p-6">
@@ -279,21 +306,40 @@ function FinancialManagement() {
                                 depositType: "Bank",
                                 relationShipId: "",
                                 depositAmount: "",
-                                remarks: ""
+                                remarks: "",
+                                fileIds: Yup.array().nullable()
+
                             }}
                             validationSchema={Yup.object({
                                 inmateId: Yup.string().required("Inmate ID is required"),
                                 depositType: Yup.string().required("Deposit Type is required"),
                                 relationShipId: Yup.string().required("Relationship is required"),
                                 depositAmount: Yup.number().required("Deposit amount is required").positive(),
+                                fileIds: Yup.array().nullable()
                             })}
-                            onSubmit={(values, { resetForm }) => {
-                                let updateData = {
-                                    "type": "deposit", "status": "ACTIVE", ...values
-                                }
-                                postWagesData(updateData, "financial/create")
+
+                            // onSubmit={(values, { resetForm }) => {
+                            //     let updateData = {
+                            //         "type": "deposit", "status": "ACTIVE", ...values
+                            //     }
+                            //     postWagesData(updateData, "financial/create")
+                            //     resetForm();
+                            //     setDailyWagesInmate([])
+                            //     setShowDeposit(false);
+                            // }}
+                            onSubmit={async (values, { resetForm }) => {
+                                const updateData = {
+                                    type: "deposit",
+                                    status: "ACTIVE",
+                                    ...values,
+                                    fileIds: uploadedFileIds
+                                };
+
+                                await postWagesData(updateData, "financial/create");
+
                                 resetForm();
-                                setDailyWagesInmate([])
+                                setUploadedFileIds([]);
+                                setDailyWagesInmate([]);
                                 setShowDeposit(false);
                             }}
                         >
@@ -407,6 +453,40 @@ function FinancialManagement() {
                                                 <p className="text-sm text-red-600 mt-1">{errors.remarks}</p>
                                             )}
                                         </div>
+
+                                        <div>
+                                            <Label htmlFor="fileIds" className="text-sm font-medium text-gray-700">
+                                                Upload Files
+                                            </Label>
+                                            <Input
+                                                id="fileIds"
+                                                name="fileIds"
+                                                type="file"
+                                                className="mt-1"
+                                                multiple
+                                                onChange={async (event) => {
+                                                    const files = Array.from(event.target.files);
+
+                                                    // Upload immediately
+                                                    const ids = await uploadFiles(files);
+
+                                                    // Push ids to formik
+                                                    setFieldValue("fileIds", [...uploadedFileIds, ...ids]);
+                                                }}
+                                            />
+
+
+                                            {errors.fileIds && touched.fileIds && (
+                                                <p className="text-sm text-red-600 mt-1">{errors.fileIds}</p>
+                                            )}
+                                            {uploadedFileIds.length > 0 && (
+                                                <p className="text-sm text-green-600 mt-1">
+                                                    {uploadedFileIds.length} file(s) uploaded
+                                                </p>
+                                            )}
+
+                                        </div>
+
 
                                         <Button type="submit" className="w-[93%] bg-green-600 hover:bg-green-700 text-white mt-4 absolute bottom-6">
                                             <CreditCard className="w-4 h-4 mr-2" />
