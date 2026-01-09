@@ -199,6 +199,16 @@ function InMateManageMent() {
 
                                 <TableCell>
                                     <TableSortLabel
+                                        active={orderBy === "phonenumber"}
+                                        direction={orderBy === "phonenumber" ? order : "dsc"}
+                                        onClick={() => handleRequestSort("phonenumber")}
+                                    >
+                                        Mobile No
+                                    </TableSortLabel>
+                                </TableCell>
+
+                                <TableCell>
+                                    <TableSortLabel
                                         active={orderBy === "custodyType"}
                                         direction={orderBy === "custodyType" ? order : "dsc"}
                                         onClick={() => handleRequestSort("custodyType")}
@@ -246,6 +256,7 @@ function InMateManageMent() {
                                 <TableRow key={inmate._id} className="border-b last:border-b-0">
                                     <TableCell className="text-gray-900">{inmate.inmateId}</TableCell>
                                     <TableCell className="text-gray-900">{inmate.firstName + " " + inmate.lastName}</TableCell>
+                                    <TableCell className="text-gray-600">{inmate.phonenumber}</TableCell>
                                     <TableCell className="text-gray-600">{inmate.custodyType}</TableCell>
                                     <TableCell className="text-gray-600">{inmate.cellNumber}</TableCell>
                                     <TableCell sx={{ color: "#4ade80", fontWeight: 600 }}>{inmate.balance}</TableCell>

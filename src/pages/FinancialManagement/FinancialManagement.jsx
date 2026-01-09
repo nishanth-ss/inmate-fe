@@ -7,7 +7,7 @@ import { Plus, CreditCard } from "lucide-react"
 import { Formik, Form, Field } from "formik"
 import * as Yup from "yup"
 import { usePostData } from "../../hooks/usePostData"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Box, Snackbar } from "@mui/material"
 import { useSnackbar } from "notistack"
 import useFetchData from "../../hooks/useFetchData"
@@ -29,6 +29,7 @@ function FinancialManagement() {
     const locationRaw = localStorage.getItem("location");
     const location = locationRaw ? JSON.parse(locationRaw) : null;
     const [uploadedFileIds, setUploadedFileIds] = useState([]);
+    const fileInputRef = useRef(null);
 
     const { data: inmateData, error: inmateError } = useFetchData(
         inmateIdSearch ? `inmate/search?query=${inmateIdSearch}` : null,
@@ -89,8 +90,6 @@ function FinancialManagement() {
 
         return [];
     }
-
-
 
     return (
         <div className="w-full bg-gray-50 p-6">
@@ -307,7 +306,7 @@ function FinancialManagement() {
                                 relationShipId: "",
                                 depositAmount: "",
                                 remarks: "",
-                                fileIds: Yup.array().nullable()
+                                fileIds: []
 
                             }}
                             validationSchema={Yup.object({
@@ -315,7 +314,8 @@ function FinancialManagement() {
                                 depositType: Yup.string().required("Deposit Type is required"),
                                 relationShipId: Yup.string().required("Relationship is required"),
                                 depositAmount: Yup.number().required("Deposit amount is required").positive(),
-                                fileIds: Yup.array().nullable()
+                                remarks: Yup.string().required("Remarks is required"),
+                                fileIds: Yup.array().min(1, "At least one file is required")
                             })}
 
                             // onSubmit={(values, { resetForm }) => {
@@ -341,15 +341,19 @@ function FinancialManagement() {
                                 setUploadedFileIds([]);
                                 setDailyWagesInmate([]);
                                 setShowDeposit(false);
+
+                                if (fileInputRef.current) {
+                                    fileInputRef.current.value = "";
+                                }
                             }}
                         >
-                            {({ values, handleChange, handleSubmit, errors, touched, setFieldValue }) => (
+                            {({ values, handleChange, handleSubmit, errors, touched, setFieldValue,setFieldTouched  }) => (
                                 <Form onSubmit={handleSubmit}>
                                     <CardContent className="space-y-5">
                                         {/* Inmate ID */}
                                         <div>
                                             <Label htmlFor="inmateId" className="text-sm font-medium text-gray-700">
-                                                Inmate ID
+                                                Inmate ID<span className="required">*</span>
                                             </Label>
                                             <Input
                                                 id="inmateId"
@@ -371,7 +375,7 @@ function FinancialManagement() {
 
                                         <div>
                                             <Label htmlFor="depositType" className="text-sm font-medium text-gray-700">
-                                                Deposit Type
+                                                Deposit Type<span className="required">*</span>
                                             </Label>
                                             <Select
                                                 onValueChange={(value) => setFieldValue("depositType", value)}
@@ -391,7 +395,7 @@ function FinancialManagement() {
 
                                         <div>
                                             <Label htmlFor="relationShipId" className="text-sm font-medium text-gray-700">
-                                                Relationship
+                                                Relationship<span className="required">*</span>
                                             </Label>
                                             <Select
                                                 onValueChange={(value) => setFieldValue("relationShipId", value)}
@@ -418,7 +422,7 @@ function FinancialManagement() {
                                         {/* Deposit Amount */}
                                         <div>
                                             <Label htmlFor="depositAmount" className="text-sm font-medium text-gray-700">
-                                                Deposit Amount
+                                                Deposit Amount<span className="required">*</span>
                                             </Label>
                                             <Input
                                                 id="depositAmount"
@@ -438,7 +442,7 @@ function FinancialManagement() {
 
                                         <div>
                                             <Label htmlFor="remarks" className="text-sm font-medium text-gray-700">
-                                                Remarks
+                                                Remarks<span className="required">*</span>
                                             </Label>
                                             <Textarea
                                                 id="remarks"
@@ -456,26 +460,22 @@ function FinancialManagement() {
 
                                         <div>
                                             <Label htmlFor="fileIds" className="text-sm font-medium text-gray-700">
-                                                Upload Files
+                                                Upload Files<span className="required">*</span>
                                             </Label>
                                             <Input
                                                 id="fileIds"
+                                                ref={fileInputRef}
                                                 name="fileIds"
                                                 type="file"
-                                                className="mt-1"
                                                 multiple
                                                 onChange={async (event) => {
                                                     const files = Array.from(event.target.files);
-
-                                                    // Upload immediately
                                                     const ids = await uploadFiles(files);
 
-                                                    // Push ids to formik
                                                     setFieldValue("fileIds", [...uploadedFileIds, ...ids]);
+                                                    setFieldTouched("fileIds", true);
                                                 }}
                                             />
-
-
                                             {errors.fileIds && touched.fileIds && (
                                                 <p className="text-sm text-red-600 mt-1">{errors.fileIds}</p>
                                             )}
