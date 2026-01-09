@@ -72,7 +72,7 @@ function FinancialManagement() {
             formData.append("files", file);
         });
 
-        const response = await fetch("https://nvl2rk2s-5000.inc1.devtunnels.ms/file", {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/file`, {
             method: "POST",
             body: formData
         });
