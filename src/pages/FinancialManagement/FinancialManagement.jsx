@@ -30,6 +30,7 @@ function FinancialManagement() {
     const location = locationRaw ? JSON.parse(locationRaw) : null;
     const [uploadedFileIds, setUploadedFileIds] = useState([]);
     const fileInputRef = useRef(null);
+    const [loading, setLoading] = useState(false);
 
     const { data: inmateData, error: inmateError } = useFetchData(
         inmateIdSearch ? `inmate/search?query=${inmateIdSearch}` : null,
@@ -67,28 +68,25 @@ function FinancialManagement() {
     }
 
     async function uploadFiles(files) {
+        setLoading(true);
         const formData = new FormData();
-        files.forEach(file => {
-            formData.append("files", file);
-        });
+        files.forEach(file => formData.append("files", file));
 
-        const response = await fetch(`${import.meta.env.VITE_API_URL}file`, {
-            method: "POST",
-            body: formData
-        });
+        try {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}file`, {
+                method: "POST",
+                body: formData
+            });
 
-        const result = await response.json();
-
-        if (result?.status) {
-            const ids = result.data.map(f => f._id);
-
-            // append to existing uploaded ids
-            setUploadedFileIds(prev => [...prev, ...ids]);
-
-            return ids;
+            const result = await response.json();
+            if (result?.status) {
+                const ids = result.data.map(f => f._id);
+                return ids;
+            }
+            return [];
+        } finally {
+            setLoading(false);
         }
-
-        return [];
     }
 
     return (
@@ -332,7 +330,7 @@ function FinancialManagement() {
                                     type: "deposit",
                                     status: "ACTIVE",
                                     ...values,
-                                    fileIds: uploadedFileIds
+                                    fileIds: values.fileIds
                                 };
 
                                 await postWagesData(updateData, "financial/create");
@@ -347,7 +345,7 @@ function FinancialManagement() {
                                 }
                             }}
                         >
-                            {({ values, handleChange, handleSubmit, errors, touched, setFieldValue,setFieldTouched  }) => (
+                            {({ values, handleChange, handleSubmit, errors, touched, setFieldValue, setFieldTouched }) => (
                                 <Form onSubmit={handleSubmit}>
                                     <CardContent className="space-y-5">
                                         {/* Inmate ID */}
@@ -469,26 +467,37 @@ function FinancialManagement() {
                                                 type="file"
                                                 multiple
                                                 onChange={async (event) => {
+                                                    setFieldTouched("fileIds", true);
                                                     const files = Array.from(event.target.files);
                                                     const ids = await uploadFiles(files);
 
-                                                    setFieldValue("fileIds", [...uploadedFileIds, ...ids]);
-                                                    setFieldTouched("fileIds", true);
+                                                    setFieldValue("fileIds", [...values.fileIds, ...ids]);
                                                 }}
                                             />
                                             {errors.fileIds && touched.fileIds && (
                                                 <p className="text-sm text-red-600 mt-1">{errors.fileIds}</p>
                                             )}
-                                            {uploadedFileIds.length > 0 && (
+
+                                            {loading && (
+                                                <div className="flex items-center gap-2 mt-2">
+                                                    <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                                                        <circle className="opacity-25" cx="12" cy="12" r="10" />
+                                                        <path className="opacity-75" d="M4 12a8 8 0 018-8v8z" />
+                                                    </svg>
+                                                    <span className="text-sm text-blue-600">Uploading...</span>
+                                                </div>
+                                            )}
+                                            {values.fileIds.length > 0 && (
                                                 <p className="text-sm text-green-600 mt-1">
-                                                    {uploadedFileIds.length} file(s) uploaded
+                                                    {values.fileIds.length} file(s) uploaded
                                                 </p>
                                             )}
+
 
                                         </div>
 
 
-                                        <Button type="submit" className="w-[93%] bg-green-600 hover:bg-green-700 text-white mt-4 absolute bottom-6">
+                                        <Button type="submit" disabled={loading} className="w-[93%] bg-green-600 hover:bg-green-700 text-white mt-4 absolute bottom-6">
                                             <CreditCard className="w-4 h-4 mr-2" />
                                             Process Deposit
                                         </Button>

@@ -71,7 +71,7 @@ function SideBar() {
                         );
                     })}
                 </ul>
-                <p className="text-[12px] text-gray-500 mt-2">© {new Date().getFullYear()} Allen Group. All rights reserved</p>
+                <p className="text-[12px] text-gray-500 mt-2">© {new Date().getFullYear()} AG Soft Solutions. All rights reserved</p>
             </div>
         </nav>
     );

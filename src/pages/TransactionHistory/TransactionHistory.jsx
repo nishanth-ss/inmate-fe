@@ -1,7 +1,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table"
 import { useState } from "react"
 import useFetchData from "../../hooks/useFetchData"
-import { TablePagination } from "@mui/material"
+import { Button, TablePagination } from "@mui/material"
 import { Badge } from "../../components/ui/badge";
 import { Label } from "@radix-ui/react-label"
 import {
@@ -11,6 +11,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "../../components/ui/select";
+import TransactionDialog from "@/components/TransactionModal";
 
 function TransactionHistory() {
 
@@ -19,6 +20,8 @@ function TransactionHistory() {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [range, setRange] = useState('daily');
     const { data, error } = useFetchData(`transactions?range=${range}&page=${page + 1}&limit=${rowsPerPage}`, refetch, "true");
+    const [selectedTxn, setSelectedTxn] = useState(null);
+    const [open, setOpen] = useState(false);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -98,6 +101,7 @@ function TransactionHistory() {
                                 <TableHead className="font-semibold">Date</TableHead>
                                 <TableHead className="font-semibold">Source</TableHead>
                                 <TableHead className="font-semibold">Status</TableHead>
+                                <TableHead className="font-semibold">Action</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -183,6 +187,14 @@ function TransactionHistory() {
                                                     </Badge>
                                                 )}
                                             </TableCell>
+                                            <TableCell>
+                                                <Button color="success" variant="contained"
+                                                    onClick={() => {
+                                                        setSelectedTxn(transaction);
+                                                        setOpen(true);
+                                                    }}
+                                                >View</Button>
+                                            </TableCell>
                                         </TableRow>
                                     );
                                 })
@@ -207,6 +219,12 @@ function TransactionHistory() {
                     )}
                 </div>
             </div>
+
+            <TransactionDialog
+                open={open}
+                onClose={() => setOpen(false)}
+                txn={selectedTxn}
+            />
         </div>
     )
 }

@@ -30,12 +30,12 @@ const reportTypes = [
         description: "Revenue and item sales data",
         apiUrl: 'reports/tuckshop-sales-report'
     },
-    {
-        id: 4,
-        title: "Wage Distribution",
-        description: "Total wages paid by department",
-        apiUrl: 'reports/wage-distribution-report'
-    },
+    // {
+    //     id: 4,
+    //     title: "Wage Distribution",
+    //     description: "Total wages paid by department",
+    //     apiUrl: 'reports/wage-distribution-report'
+    // },
     {
         id: 5,
         title: "Inventory",
